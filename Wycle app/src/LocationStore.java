@@ -28,7 +28,7 @@ public class LocationStore {
 
     private void readInCities() {
 
-        String fileName = "cities.txt";
+        String fileName = "data/cities.txt";
 
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
             stream.forEach(c -> cities.add(c));
