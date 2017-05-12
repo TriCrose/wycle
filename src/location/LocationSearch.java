@@ -1,3 +1,5 @@
+package location;
+
 public class LocationSearch {
 
 
