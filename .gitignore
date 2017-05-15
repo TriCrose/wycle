@@ -1,2 +1,7 @@
 .idea
 wycle.iml
+.classpath
+.project
+.settings/
+bin/
+out/
