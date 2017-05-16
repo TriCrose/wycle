@@ -6,7 +6,7 @@ import com.weatherlibraryjava.Repository;
 
 public class MainWeather {
 	
-	 String key = "eb2a0633229b456ba6093557151106";
+	 String key = "bdc5142f54be4c62b03132022171605";
 
 	public static void main(String[] args) {
 		
