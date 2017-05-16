@@ -10,6 +10,8 @@ import java.util.stream.Stream;
  * A singleton class to store all the locations which can be chosen by the user.
  * Provides functionality to read in a list of cities from a text file; get the list
  * of cities and also search the list for cities containing a given string.
+ * 
+ * Recommend getting the first instance as part of app start up process
  */
 public class LocationStore {
 
@@ -17,7 +19,7 @@ public class LocationStore {
     private static ArrayList<String> cities;
     // Singleton class so store the current instance
     private static LocationStore instance;
-    // Store the maximum length of the city strings
+    // Store the maximum length of all the city strings
     private static int maxLength;
 
 
@@ -62,7 +64,9 @@ public class LocationStore {
         ArrayList<String> results = new ArrayList<>();
 
         String lowerInput = input.toLowerCase();
-        Map<String, Integer> cityIndices = new HashMap<>();
+        Map<String, Integer> cityIndices = new TreeMap<>();
+
+        // for each city which contains the given string, put it with the index of the substring in the map
         for (String city : cities) {
             int substringIndex = city.toLowerCase().indexOf(lowerInput);
             if (substringIndex != -1) {
@@ -77,7 +81,6 @@ public class LocationStore {
 
         return results;
     }
-//TODO: Possibly implement the above sorting as a counting sort with the below?
 
 
     /**
