@@ -93,6 +93,7 @@ public class MainWindow extends JFrame {
         icons.add(labelWeatherIcon);
     }
 
+
     private void drawRainWind() {
 
         JLabel labelRain = new JLabel("Rain");
