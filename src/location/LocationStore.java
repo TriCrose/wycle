@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * Provides functionality to read in a list of cities from a text file; get the list
  * of cities and also search the list for cities containing a given string.
  * 
- * Recommend getting the first instance as part of app start up process
+ * Recommend getting the first instance as part of app start-up process
  */
 public class LocationStore {
 
