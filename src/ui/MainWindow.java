@@ -28,17 +28,13 @@ public class MainWindow extends JFrame {
         setLayout(new GridBagLayout());
         getContentPane().setBackground(backColour);
 
-        day = addPanelBorderLayout(0, 0.04);
-        JLabel labelDay = new JLabel("Today");
-        labelDay.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
-        labelDay.setHorizontalAlignment(JLabel.CENTER);
-        day.add(labelDay);
-
-        icons = addPanelGridLayout(1, 0.1, 1, 2);
+        day = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
+        drawDay();
+        icons = addPanel(new JPanel(new GridLayout(1, 2)), 1, 0.1);
         drawIcons();
-        rainWind = addPanelGridLayout(2, 0.1, 1, 3);
+        rainWind = addPanel(new JPanel(new GridLayout(1, 3)), 2, 0.1);
         drawRainWind();
-        detailed = addPanelGridLayout(3, 0.5, 0, 1);
+        detailed = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
         drawDetailed();
 
         setVisible(true);
@@ -67,20 +63,6 @@ public class MainWindow extends JFrame {
     }
 
 
-    private JPanel addPanelBorderLayout(int gridY, double weight) {
-
-        JPanel panel = new JPanel(new BorderLayout());
-        return addPanel(panel, gridY, weight);
-    }
-
-
-    private JPanel addPanelGridLayout(int gridY, double weight, int rows, int columns) {
-
-        JPanel panel = new JPanel(new GridLayout(rows, columns));
-        return addPanel(panel, gridY, weight);
-    }
-
-
     private void drawIcons() {
 
         JLabel labelBikeCoefficient = new JLabel("bike coefficient");
@@ -93,6 +75,14 @@ public class MainWindow extends JFrame {
         icons.add(labelWeatherIcon);
     }
 
+
+    private void drawDay() {
+
+        JLabel labelDay = new JLabel("Today");
+        labelDay.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+        labelDay.setHorizontalAlignment(JLabel.CENTER);
+        day.add(labelDay);
+    }
 
     private void drawRainWind() {
 

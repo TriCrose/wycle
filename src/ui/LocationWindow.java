@@ -1,8 +1,13 @@
 package ui;
 
+import location.LocationStore;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class LocationWindow extends JFrame {
 
@@ -15,6 +20,8 @@ public class LocationWindow extends JFrame {
     private JPanel suggestions;
     private JPanel recentLocations;
 
+    private ArrayList<JPanel> suggestionPanels = new ArrayList<>(5);
+
 
     public LocationWindow() {
 
@@ -26,12 +33,14 @@ public class LocationWindow extends JFrame {
         setLayout(new GridBagLayout());
         getContentPane().setBackground(backColour);
 
-        searchBar = addPanel(new JPanel(), 0, 0.5);
+        searchBar = addPanel(new JPanel(), 0, 0.1);
         drawSearchBar();
 
-        suggestions = addPanel(new JPanel(new GridLayout(0, 1)), 0, 0.5);
+        suggestions = addPanel(new JPanel(new GridLayout(5, 1)), 0, 0.3);
+        drawSuggestions();
 
         recentLocations = addPanel(new JPanel(new GridLayout(0, 1)), 2, 0.5);
+        drawRecentLocations();
 
         setVisible(true);
     }
@@ -63,6 +72,35 @@ public class LocationWindow extends JFrame {
 
         JTextField textField = new JTextField(10);
 
+        textField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String searchData = textField.getText();
+                ArrayList<String> suggestions = LocationStore.search(searchData);
+                updateSuggestions(suggestions);
+            }
+        });
+
         searchBar.add(textField);
+    }
+
+
+    private void updateSuggestions(ArrayList<String> suggestions) {
+
+    }
+
+
+    private void drawSuggestions() {
+
+        JPanel grid = new JPanel(new GridLayout(0, 1));
+        suggestions.add(grid);
+    }
+
+
+    private void drawRecentLocations() {
+
+        JPanel grid = new JPanel(new GridLayout(0, 1));
+        recentLocations.add(grid);
     }
 }
