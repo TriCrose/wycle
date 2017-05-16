@@ -10,7 +10,7 @@ import java.util.stream.Stream;
  * A singleton class to store all the locations which can be chosen by the user.
  * Provides functionality to read in a list of cities from a text file; get the list
  * of cities and also search the list for cities containing a given string.
- *
+ * <p>
  * Recommend getting the first instance as part of app start-up process
  */
 public class LocationStore {
@@ -48,6 +48,8 @@ public class LocationStore {
      * @return The list of cities, this is sorted in alphabetical order
      */
     public static ArrayList<String> getCities() {
+
+        getInstance();
 
         return cities;
     }

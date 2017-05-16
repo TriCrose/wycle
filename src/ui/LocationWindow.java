@@ -4,10 +4,11 @@ import location.LocationStore;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LocationWindow extends JFrame {
 
@@ -20,7 +21,9 @@ public class LocationWindow extends JFrame {
     private JPanel suggestions;
     private JPanel recentLocations;
 
-    private ArrayList<JPanel> suggestionPanels = new ArrayList<>(5);
+    private DefaultListModel suggestionListModel;
+
+    private ArrayList<RecentsRow> recentsList;
 
 
     public LocationWindow() {
@@ -33,13 +36,13 @@ public class LocationWindow extends JFrame {
         setLayout(new GridBagLayout());
         getContentPane().setBackground(backColour);
 
-        searchBar = addPanel(new JPanel(), 0, 0.1);
+        searchBar = addPanel(new JPanel(), 0, 0.01);
         drawSearchBar();
 
-        suggestions = addPanel(new JPanel(new GridLayout(5, 1)), 0, 0.3);
+        suggestions = addPanel(new JPanel(), 1, 0.01);
         drawSuggestions();
 
-        recentLocations = addPanel(new JPanel(new GridLayout(0, 1)), 2, 0.5);
+        recentLocations = addPanel(new JPanel(new GridLayout(0, 1)), 2, 0.75);
         drawRecentLocations();
 
         setVisible(true);
@@ -72,9 +75,29 @@ public class LocationWindow extends JFrame {
 
         JTextField textField = new JTextField(10);
 
-        textField.addActionListener(new ActionListener() {
+        textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void insertUpdate(DocumentEvent e) {
+
+                onUpdate();
+            }
+
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+
+                onUpdate();
+            }
+
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+                onUpdate();
+            }
+
+
+            private void onUpdate() {
 
                 String searchData = textField.getText();
                 ArrayList<String> suggestions = LocationStore.search(searchData);
@@ -86,21 +109,43 @@ public class LocationWindow extends JFrame {
     }
 
 
-    private void updateSuggestions(ArrayList<String> suggestions) {
+    private void updateSuggestions(List<String> searchResult) {
 
+        suggestionListModel.removeAllElements();
+        if (searchResult.size() > 0) {
+            for (String s : searchResult) {
+                suggestionListModel.addElement(s);
+            }
+        }
     }
 
 
     private void drawSuggestions() {
 
-        JPanel grid = new JPanel(new GridLayout(0, 1));
-        suggestions.add(grid);
+        suggestionListModel = new DefaultListModel();
+
+        Object[] cities = LocationStore.getCities().toArray();
+        for (Object o : cities) {
+            suggestionListModel.addElement(o);
+        }
+
+        JList list = new JList(suggestionListModel);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JScrollPane scrollPane = new JScrollPane(list);
+
+        suggestions.add(scrollPane);
     }
 
 
     private void drawRecentLocations() {
 
-        JPanel grid = new JPanel(new GridLayout(0, 1));
-        recentLocations.add(grid);
+        recentsList = new ArrayList<>();
+
+        for (int i = 0; i < 6; i++) {
+            RecentsRow rr = new RecentsRow("place");
+            recentsList.add(rr);
+            recentLocations.add(rr.getPanel());
+        }
     }
 }

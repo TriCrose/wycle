@@ -3,6 +3,7 @@ package ui;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class MainWindow extends JFrame {
 
@@ -16,6 +17,10 @@ public class MainWindow extends JFrame {
     private JPanel icons;
     private JPanel rainWind;
     private JPanel detailed;
+
+    private String currentDay = "Today";// Please change accordingly
+
+    private ArrayList<DetailedRow> detailedRows;
 
 
     public MainWindow() {
@@ -78,7 +83,7 @@ public class MainWindow extends JFrame {
 
     private void drawDay() {
 
-        JLabel labelDay = new JLabel("Today");
+        JLabel labelDay = new JLabel(currentDay);
         labelDay.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
         labelDay.setHorizontalAlignment(JLabel.CENTER);
         day.add(labelDay);
@@ -102,8 +107,11 @@ public class MainWindow extends JFrame {
 
     private void drawDetailed() {
 
+        detailedRows = new ArrayList<>();
+
         for (int i = 0; i < 10; i++) {
             DetailedRow dr = new DetailedRow();
+            detailedRows.add(dr);
             detailed.add(dr.getPanel());
         }
     }

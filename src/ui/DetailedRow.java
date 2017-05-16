@@ -23,6 +23,12 @@ public class DetailedRow {
         JLabel labelwind = new JLabel("wind");
         JLabel labelicon = new JLabel("icon");
 
+        labelTime.setHorizontalAlignment(JLabel.CENTER);
+        labelrain.setHorizontalAlignment(JLabel.CENTER);
+        labeltemp.setHorizontalAlignment(JLabel.CENTER);
+        labelwind.setHorizontalAlignment(JLabel.CENTER);
+        labelicon.setHorizontalAlignment(JLabel.CENTER);
+
         row.add(labelTime);
         row.add(labelrain);
         row.add(labeltemp);
