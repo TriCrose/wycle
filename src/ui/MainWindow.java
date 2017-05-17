@@ -2,6 +2,9 @@ package ui;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+
+import aurelienribon.slidinglayout.*;
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -19,7 +22,6 @@ public class MainWindow extends JFrame {
     private JPanel detailed;
 
     private String currentDay = "Today";// Please change accordingly
-
     private ArrayList<DetailedRow> detailedRows;
 
 
@@ -47,7 +49,6 @@ public class MainWindow extends JFrame {
 
 
     public static void main(String args[]) {
-
         new MainWindow();
     }
 
