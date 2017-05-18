@@ -20,7 +20,6 @@ public class MainWeather {
 			System.out.println("WeatherTestJava : location name==============>"+weatherModel.location.name);
 			System.out.println("WeatherTestJava : Temp==============>"+weatherModel.current.temp_c);
 			
-			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
