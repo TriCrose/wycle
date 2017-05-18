@@ -125,9 +125,9 @@ public class LocationWindow extends JFrame {
 
         suggestionListModel = new DefaultListModel();
 
-        Object[] cities = LocationStore.getCities().toArray();
-        for (Object o : cities) {
-            suggestionListModel.addElement(o);
+        ArrayList<LocationObject> cities = LocationStore.getCities();
+        for (LocationObject lo : cities) {
+            suggestionListModel.addElement(lo.getCity() + ", " + lo.getCountry());
         }
 
         JList list = new JList(suggestionListModel);
