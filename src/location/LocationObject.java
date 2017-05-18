@@ -1,5 +1,8 @@
 package location;
 
+/**
+ * Class to store relevant location data
+ */
 public class LocationObject implements Comparable<LocationObject> {
 
     private String city;
@@ -22,8 +25,7 @@ public class LocationObject implements Comparable<LocationObject> {
     @Override
     public String toString() {
 
-        return "LocationObject{" + "city='" + city + '\'' + ", lat='" + lat + '\'' + ", lng='" + lng + '\'' + ", " +
-                "country='" + country + '\'' + ", province='" + province + '\'' + '}';
+        return "LocationObject{" + "city='" + city + '\'' + ", lat='" + lat + '\'' + ", lng='" + lng + '\'' + ", " + "country='" + country + '\'' + ", province='" + province + '\'' + '}';
     }
 
 
