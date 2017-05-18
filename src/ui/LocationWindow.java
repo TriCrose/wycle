@@ -1,5 +1,6 @@
 package ui;
 
+import location.LocationObject;
 import location.LocationStore;
 
 import javax.swing.*;
@@ -100,7 +101,7 @@ public class LocationWindow extends JFrame {
             private void onUpdate() {
 
                 String searchData = textField.getText();
-                ArrayList<String> suggestions = LocationStore.search(searchData);
+                ArrayList<LocationObject> suggestions = LocationStore.search(searchData);
                 updateSuggestions(suggestions);
             }
         });
@@ -109,12 +110,12 @@ public class LocationWindow extends JFrame {
     }
 
 
-    private void updateSuggestions(List<String> searchResult) {
+    private void updateSuggestions(List<LocationObject> searchResult) {
 
         suggestionListModel.removeAllElements();
         if (searchResult.size() > 0) {
-            for (String s : searchResult) {
-                suggestionListModel.addElement(s);
+            for (LocationObject s : searchResult) {
+                suggestionListModel.addElement(s.getCity());
             }
         }
     }
