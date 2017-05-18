@@ -1,5 +1,7 @@
 package ui;
 
+import apixu.WeatherHour;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,21 +9,20 @@ public class DetailedRow {
 
     private JPanel row;
 
-
     public DetailedRow() {
 
     }
 
 
-    public JPanel getPanel() {
+    public JPanel getPanel(WeatherHour weatherHour) {
 
         row = new JPanel(new GridLayout(1, 0));
 
-        JLabel labelTime = new JLabel("time");
-        JLabel labelrain = new JLabel("rain");
-        JLabel labeltemp = new JLabel("temp");
-        JLabel labelwind = new JLabel("wind");
-        JLabel labelicon = new JLabel("icon");
+        JLabel labelTime = new JLabel(weatherHour.getmTime());
+        JLabel labelrain = new JLabel(String.valueOf(weatherHour.getmRain()) + " mm");
+        JLabel labeltemp = new JLabel(String.valueOf(weatherHour.getmTemp()) + "°C");
+        JLabel labelwind = new JLabel(String.valueOf(weatherHour.getmWind()) + "mph");
+        JLabel labelicon = new JLabel(weatherHour.getmCondition().getIcon());
 
         labelTime.setHorizontalAlignment(JLabel.CENTER);
         labelrain.setHorizontalAlignment(JLabel.CENTER);
