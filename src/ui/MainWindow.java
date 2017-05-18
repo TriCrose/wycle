@@ -44,7 +44,7 @@ public class MainWindow extends JFrame {
         drawIcons();
         rainWind = addPanel(new JPanel(new GridLayout(1, 3)), 2, 0.1);
         drawRainWind();
-        detailed = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
+        detailed = addPanel(new JPanel(new GridLayout(0, 1, 0, 5)), 3, 0.5);
         drawDetailed();
 
         setVisible(true);
@@ -95,9 +95,11 @@ public class MainWindow extends JFrame {
 
     private void drawRainWind() {
 
-        JLabel labelRain = new JLabel("Rain");
-        JLabel labelTemp = new JLabel("temp here");
-        JLabel labelWind = new JLabel("wind here");
+        WeatherHour currentWeather = weatherForecast.getWeather();
+
+        JLabel labelRain = new JLabel(currentWeather.getmRain() + "mm");
+        JLabel labelTemp = new JLabel(currentWeather.getmTemp() + "°C");
+        JLabel labelWind = new JLabel(currentWeather.getmWind() + "mph");
 
         labelRain.setHorizontalAlignment(JLabel.CENTER);
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
@@ -117,7 +119,6 @@ public class MainWindow extends JFrame {
 
         Calendar currentCal = Calendar.getInstance();
         int hour = currentCal.get(Calendar.HOUR_OF_DAY);
-        System.out.println(hour);
 
         for (int i = 0; i < 10 && i + hour < weatherHour.size(); i++) {
             DetailedRow dr = new DetailedRow();

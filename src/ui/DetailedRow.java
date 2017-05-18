@@ -19,9 +19,9 @@ public class DetailedRow {
         row = new JPanel(new GridLayout(1, 0));
 
         JLabel labelTime = new JLabel(weatherHour.getmTime());
-        JLabel labelrain = new JLabel(String.valueOf(weatherHour.getmRain()) + " mm");
-        JLabel labeltemp = new JLabel(String.valueOf(weatherHour.getmTemp()) + "°C");
-        JLabel labelwind = new JLabel(String.valueOf(weatherHour.getmWind()) + "mph");
+        JLabel labelrain = new JLabel(weatherHour.getmRain() + " mm");
+        JLabel labeltemp = new JLabel(weatherHour.getmTemp() + "°C");
+        JLabel labelwind = new JLabel(weatherHour.getmWind() + "mph");
         JLabel labelicon = new JLabel(weatherHour.getmCondition().getIcon());
 
         labelTime.setHorizontalAlignment(JLabel.CENTER);
