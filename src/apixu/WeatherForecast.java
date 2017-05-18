@@ -91,4 +91,14 @@ public class WeatherForecast {
         return row;
     }
 
+    public WeatherDay getDaySummary(int day) {
+        WeatherDay wDay = new WeatherDay();
+        wDay.setmAvgTemp(mWeatherModel.forecast.forecastday.get(day).getDay().avgtemp_c);
+        wDay.setmMaxTemp(mWeatherModel.forecast.forecastday.get(day).getDay().maxtemp_c);
+        wDay.setmMinTemp(mWeatherModel.forecast.forecastday.get(day).getDay().mintemp_c);
+        wDay.setmMaxWind(mWeatherModel.forecast.forecastday.get(day).getDay().maxwind_mph);
+        wDay.setmTotalRain(mWeatherModel.forecast.forecastday.get(day).getDay().totalprecip_mm);
+        return wDay;
+    }
+
 }
