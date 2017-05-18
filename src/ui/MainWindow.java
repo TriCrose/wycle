@@ -44,7 +44,7 @@ public class MainWindow extends JFrame {
         drawIcons();
         rainWind = addPanel(new JPanel(new GridLayout(1, 3)), 2, 0.1);
         drawRainWind();
-        detailed = addPanel(new JPanel(new GridLayout(0, 1, 0, 5)), 3, 0.5);
+        detailed = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
         drawDetailed();
 
         setVisible(true);
@@ -52,6 +52,7 @@ public class MainWindow extends JFrame {
 
 
     public static void main(String args[]) {
+
         new MainWindow();
     }
 
@@ -93,6 +94,7 @@ public class MainWindow extends JFrame {
         day.add(labelDay);
     }
 
+
     private void drawRainWind() {
 
         WeatherHour currentWeather = weatherForecast.getWeather();
@@ -102,8 +104,11 @@ public class MainWindow extends JFrame {
         JLabel labelWind = new JLabel(currentWeather.getmWind() + "mph");
 
         labelRain.setHorizontalAlignment(JLabel.CENTER);
+        labelRain.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
+        labelTemp.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
         labelWind.setHorizontalAlignment(JLabel.CENTER);
+        labelWind.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
 
         rainWind.add(labelRain);
         rainWind.add(labelTemp);
@@ -116,14 +121,32 @@ public class MainWindow extends JFrame {
         detailedRows = new ArrayList<>();
 
         ArrayList<WeatherHour> weatherHour = weatherForecast.getWeather(0);
+        ArrayList<WeatherHour> tomorrowWeatherHour = weatherForecast.getWeather(1);
 
         Calendar currentCal = Calendar.getInstance();
         int hour = currentCal.get(Calendar.HOUR_OF_DAY);
 
-        for (int i = 0; i < 10 && i + hour < weatherHour.size(); i++) {
-            DetailedRow dr = new DetailedRow();
-            detailedRows.add(dr);
-            detailed.add(dr.getPanel(weatherHour.get(i + hour)));
+        for (int i = 0; i < 10; i++) {
+
+            if (i + hour < weatherHour.size()) {
+                DetailedRow dr = new DetailedRow();
+                detailedRows.add(dr);
+                detailed.add(dr.getPanel(weatherHour.get(i + hour)));
+            } else if (i + hour == weatherHour.size()) {
+                JPanel panel = new JPanel(new BorderLayout());
+                panel.setBackground(new Color(138, 192, 239));
+
+                JLabel label = new JLabel("Tomorrow");
+                System.out.println(label.getFont().getSize());
+                label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16));
+                label.setHorizontalAlignment(JLabel.CENTER);
+                panel.add(label);
+                detailed.add(panel);
+            } else {
+                DetailedRow dr = new DetailedRow();
+                detailedRows.add(dr);
+                detailed.add(dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24)));
+            }
         }
     }
 }
