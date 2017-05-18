@@ -73,6 +73,7 @@ public class WeatherForecast {
             WeatherHour wHour = new WeatherHour(time, temp, wind, rain, cond);
             table.add(wHour);
         }
+
         return table;
     }
 
@@ -110,6 +111,17 @@ public class WeatherForecast {
         double wind = mWeatherModel.forecast.forecastday.get(day).getDay().maxwind_mph;
         double rain = mWeatherModel.forecast.forecastday.get(day).getDay().totalprecip_mm;
         return new WeatherDay(dayName, wind, avgT, maxT, minT, rain);
+    }
+
+
+    /**
+     * Returns the current location
+     *
+     * @return String containing the location used by the current model
+     */
+    public String getLocation() {
+
+        return mWeatherModel.getLocation().getName();
     }
 
 }

@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class DetailedRow {
 
-    private JPanel row;
+    private JPanel mRowPanel;
 
     public DetailedRow() {
 
@@ -16,12 +16,12 @@ public class DetailedRow {
 
     public JPanel getPanel(WeatherHour weatherHour) {
 
-        row = new JPanel(new GridLayout(1, 0));
+        mRowPanel = new JPanel(new GridLayout(1, 0));
 
         JLabel labelTime = new JLabel(weatherHour.getmTime());
         JLabel labelrain = new JLabel(weatherHour.getmRain() + " mm");
-        JLabel labeltemp = new JLabel(weatherHour.getmTemp() + "°C");
-        JLabel labelwind = new JLabel(weatherHour.getmWind() + "mph");
+        JLabel labeltemp = new JLabel(weatherHour.getmTemp() + " °C");
+        JLabel labelwind = new JLabel(weatherHour.getmWind() + " mph");
         JLabel labelicon = new JLabel(weatherHour.getmCondition().getIcon());
 
         labelTime.setHorizontalAlignment(JLabel.CENTER);
@@ -30,14 +30,14 @@ public class DetailedRow {
         labelwind.setHorizontalAlignment(JLabel.CENTER);
         labelicon.setHorizontalAlignment(JLabel.CENTER);
 
-        row.add(labelTime);
-        row.add(labelrain);
-        row.add(labeltemp);
-        row.add(labelwind);
-        row.add(labelicon);
+        mRowPanel.add(labelTime);
+        mRowPanel.add(labelrain);
+        mRowPanel.add(labeltemp);
+        mRowPanel.add(labelwind);
+        mRowPanel.add(labelicon);
 
-        row.setBackground(new Color(138, 192, 239));
+        mRowPanel.setBackground(new Color(138, 192, 239));
 
-        return row;
+        return mRowPanel;
     }
 }

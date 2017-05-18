@@ -22,20 +22,20 @@ public class LocationWindow extends JFrame {
     private static GridBagConstraints constraints = new GridBagConstraints();
 
     // Panels for the windows
-    private JPanel searchBar;
-    private JPanel suggestions;
-    private JPanel recentLocations;
+    private JPanel mSearchBarPanel;
+    private JPanel mSuggestionsPanel;
+    private JPanel mRecentLocationsPanel;
 
-    // List model for the JList for suggestions
-    private DefaultListModel suggestionListModel;
+    // List model for the JList for mSuggestionsPanel
+    private DefaultListModel mSuggestionListModel;
 
     // List of recent locations and their weather
-    private ArrayList<RecentsRow> recentsList;
+    private ArrayList<RecentsRow> mRecentsList;
 
 
     /**
      * Create a new LocationWindow.
-     * <p>
+     *
      * This sets the window to have the searchbar, suggestions list and recentLocations
      */
     public LocationWindow() {
@@ -48,13 +48,13 @@ public class LocationWindow extends JFrame {
         setLayout(new GridBagLayout());
         getContentPane().setBackground(backColour);
 
-        searchBar = addPanel(new JPanel(new BorderLayout()), 0, 0.01);
+        mSearchBarPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.01);
         drawSearchBar();
 
-        suggestions = addPanel(new JPanel(new BorderLayout()), 1, 0.01);
+        mSuggestionsPanel = addPanel(new JPanel(new BorderLayout()), 1, 0.01);
         drawSuggestions();
 
-        recentLocations = addPanel(new JPanel(new GridLayout(0, 1, 0, 10)), 2, 0.75);
+        mRecentLocationsPanel = addPanel(new JPanel(new GridLayout(0, 1, 0, 10)), 2, 0.75);
         drawRecentLocations();
 
         setVisible(true);
@@ -119,16 +119,16 @@ public class LocationWindow extends JFrame {
             }
         });
 
-        searchBar.add(textField);
+        mSearchBarPanel.add(textField);
     }
 
 
     private void updateSuggestions(List<LocationObject> searchResult) {
 
-        suggestionListModel.removeAllElements();
+        mSuggestionListModel.removeAllElements();
         if (searchResult.size() > 0) {
             for (LocationObject s : searchResult) {
-                suggestionListModel.addElement(s.getCity());
+                mSuggestionListModel.addElement(s.getCity());
             }
         }
     }
@@ -136,14 +136,14 @@ public class LocationWindow extends JFrame {
 
     private void drawSuggestions() {
 
-        suggestionListModel = new DefaultListModel();
+        mSuggestionListModel = new DefaultListModel();
 
         ArrayList<LocationObject> cities = LocationStore.getCities();
         for (LocationObject lo : cities) {
-            suggestionListModel.addElement(lo.getCity() + ", " + lo.getCountry());
+            mSuggestionListModel.addElement(lo.getCity() + ", " + lo.getCountry());
         }
 
-        JList list = new JList(suggestionListModel);
+        JList list = new JList(mSuggestionListModel);
 
         list.setBackground(new Color(138, 192, 239));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -156,22 +156,24 @@ public class LocationWindow extends JFrame {
         });
 
         JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        scrollPane.setBackground(new Color(138, 192, 239));
 
-        suggestions.add(scrollPane);
+        mSuggestionsPanel.add(scrollPane);
     }
 
 
     private void drawRecentLocations() {
 
-        recentsList = new ArrayList<>();
+        mRecentsList = new ArrayList<>();
         ArrayList<LocationObject> cities = LocationStore.getCities();
 
         for (int i = 0; i < 6; i++) {
-            RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())).getCity());
-            recentsList.add(rr);
+            RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())));
+            mRecentsList.add(rr);
 
             JPanel panel = rr.getPanel();
-            recentLocations.add(panel);
+            mRecentLocationsPanel.add(panel);
 
             panel.setBackground(new Color(160, 220, 255));
         }

@@ -1,64 +1,62 @@
 package ui;
 
+import apixu.WeatherForecast;
+import location.LocationObject;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class RecentsRow {
 
-    private int frequency;
-    private String placeName;
-    // TODO: change below to either be the weather data or just the icon
-    private int icon;
-    private int temp;
+    private int mFrequency;
+    private String mPlaceName;
+    private int mIcon;
+    private double mTemp;
 
-    private JPanel row;
-
-
-    public RecentsRow() {
-
-        frequency = 0;
-        // on creation maybe get up to date weather for the location
-    }
+    private JPanel mRowPanel;
 
 
-    public RecentsRow(String place) {
+    public RecentsRow(LocationObject lo) {
 
-        placeName = place;
-        frequency = 0;
-        //Gather weather data
+        mPlaceName = lo.getCity();
+        mFrequency = 0;
+
+        WeatherForecast weatherForecast = new WeatherForecast(lo);
+
+        mTemp = weatherForecast.getWeather().getmTemp();
     }
 
 
     public void incrementFrequency() {
 
-        frequency++;
+        mFrequency++;
     }
 
 
-    public int getFrequency() {
+    public int getmFrequency() {
 
-        return frequency;
+        return mFrequency;
     }
 
 
     public JPanel getPanel() {
 
-        row = new JPanel(new GridLayout(1, 0));
+        mRowPanel = new JPanel(new GridLayout(1, 0));
 
-        JLabel labelPlace = new JLabel(placeName);
-        JLabel labelIcon = new JLabel("" + icon);
-        JLabel labelTemp = new JLabel("" + temp);
+        JLabel labelPlace = new JLabel(mPlaceName);
+        JLabel labelIcon = new JLabel("" + mIcon);
+        JLabel labelTemp = new JLabel(mTemp + " °C");
 
         labelPlace.setHorizontalAlignment(JLabel.CENTER);
         labelIcon.setHorizontalAlignment(JLabel.CENTER);
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
 
-        row.add(labelPlace);
-        row.add(labelIcon);
-        row.add(labelTemp);
+        mRowPanel.add(labelPlace);
+        mRowPanel.add(labelIcon);
+        mRowPanel.add(labelTemp);
 
-        row.setBackground(new Color(138, 192, 239));
+        mRowPanel.setBackground(new Color(138, 192, 239));
 
-        return row;
+        return mRowPanel;
     }
 }

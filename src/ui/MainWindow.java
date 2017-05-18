@@ -1,5 +1,6 @@
 package ui;
 
+import apixu.WeatherDay;
 import apixu.WeatherForecast;
 import apixu.WeatherHour;
 
@@ -8,6 +9,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MainWindow extends JFrame {
 
@@ -16,16 +18,13 @@ public class MainWindow extends JFrame {
     private static final int HEIGHT = 700;
     private static final Color backColour = new Color(138, 192, 239);
     private static GridBagConstraints constraints = new GridBagConstraints();
-
-    private JPanel day;
-    private JPanel icons;
-    private JPanel rainWind;
-    private JPanel detailed;
-
-    private String currentDay = "Today";// Please change accordingly
-    private ArrayList<DetailedRow> detailedRows;
-
-    private WeatherForecast weatherForecast = new WeatherForecast();
+    private static WeatherForecast mWeatherForecast = new WeatherForecast();
+    private JPanel mDayPanel;
+    private JPanel mIconsPanel;
+    private JPanel mRainWindPanel;
+    private JPanel mDetailedPanel;
+    private int mDayIndex = 0; // change when switching days
+    private String mCurrentDay;
 
 
     public MainWindow() {
@@ -38,13 +37,13 @@ public class MainWindow extends JFrame {
         setLayout(new GridBagLayout());
         getContentPane().setBackground(backColour);
 
-        day = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
+        mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
         drawDay();
-        icons = addPanel(new JPanel(new GridLayout(1, 2)), 1, 0.1);
+        mIconsPanel = addPanel(new JPanel(new GridLayout(1, 2)), 1, 0.1);
         drawIcons();
-        rainWind = addPanel(new JPanel(new GridLayout(1, 3)), 2, 0.1);
+        mRainWindPanel = addPanel(new JPanel(new GridLayout(1, 3)), 2, 0.1);
         drawRainWind();
-        detailed = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
+        mDetailedPanel = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
         drawDetailed();
 
         setVisible(true);
@@ -54,6 +53,18 @@ public class MainWindow extends JFrame {
     public static void main(String args[]) {
 
         new MainWindow();
+    }
+
+
+    public static WeatherForecast getmWeatherForecast() {
+
+        return mWeatherForecast;
+    }
+
+
+    public void setmDayIndex(int mDayIndex) {
+
+        this.mDayIndex = mDayIndex;
     }
 
 
@@ -73,6 +84,31 @@ public class MainWindow extends JFrame {
     }
 
 
+    private void drawDay() {
+
+        if (mDayIndex != 0) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, mDayIndex);
+            mCurrentDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        } else {
+            mCurrentDay = "Today";
+        }
+
+        JLabel labelDay = new JLabel(mCurrentDay);
+        labelDay.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+        labelDay.setHorizontalAlignment(JLabel.CENTER);
+        mDayPanel.add(labelDay);
+
+        JButton buttonLocation = new JButton();
+        mDayPanel.add(buttonLocation, BorderLayout.LINE_END);
+
+        buttonLocation.addActionListener(e -> {
+            // Location button pressed
+            System.out.println("Location button clicked");
+        });
+    }
+
+
     private void drawIcons() {
 
         JLabel labelBikeCoefficient = new JLabel("bike coefficient");
@@ -81,27 +117,36 @@ public class MainWindow extends JFrame {
         labelBikeCoefficient.setHorizontalAlignment(JLabel.CENTER);
         labelWeatherIcon.setHorizontalAlignment(JLabel.CENTER);
 
-        icons.add(labelBikeCoefficient);
-        icons.add(labelWeatherIcon);
-    }
-
-
-    private void drawDay() {
-
-        JLabel labelDay = new JLabel(currentDay);
-        labelDay.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
-        labelDay.setHorizontalAlignment(JLabel.CENTER);
-        day.add(labelDay);
+        mIconsPanel.add(labelBikeCoefficient);
+        mIconsPanel.add(labelWeatherIcon);
     }
 
 
     private void drawRainWind() {
 
-        WeatherHour currentWeather = weatherForecast.getWeather();
+        double rain;
+        double temp;
+        double wind;
 
-        JLabel labelRain = new JLabel(currentWeather.getmRain() + "mm");
-        JLabel labelTemp = new JLabel(currentWeather.getmTemp() + "°C");
-        JLabel labelWind = new JLabel(currentWeather.getmWind() + "mph");
+        if (mDayIndex == 0) {
+
+            WeatherHour currentWeather = mWeatherForecast.getWeather();
+
+            rain = currentWeather.getmRain();
+            temp = currentWeather.getmTemp();
+            wind = currentWeather.getmWind();
+        } else {
+            WeatherDay currentWeather = mWeatherForecast.getDaySummary(mDayIndex);
+
+            // TODO: Is it possible to have this do the average rain?
+            rain = currentWeather.getTotalRain();
+            temp = currentWeather.getAvgTemp();
+            wind = currentWeather.getMaxWind();
+        }
+
+        JLabel labelRain = new JLabel(rain + " mm");
+        JLabel labelTemp = new JLabel(temp + " °C");
+        JLabel labelWind = new JLabel(wind + " mph");
 
         labelRain.setHorizontalAlignment(JLabel.CENTER);
         labelRain.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
@@ -110,42 +155,39 @@ public class MainWindow extends JFrame {
         labelWind.setHorizontalAlignment(JLabel.CENTER);
         labelWind.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
 
-        rainWind.add(labelRain);
-        rainWind.add(labelTemp);
-        rainWind.add(labelWind);
+        mRainWindPanel.add(labelRain);
+        mRainWindPanel.add(labelTemp);
+        mRainWindPanel.add(labelWind);
     }
 
 
     private void drawDetailed() {
 
-        detailedRows = new ArrayList<>();
+        ArrayList<WeatherHour> weatherHour = mWeatherForecast.getWeather(mDayIndex);
+        ArrayList<WeatherHour> tomorrowWeatherHour = null;
 
-        ArrayList<WeatherHour> weatherHour = weatherForecast.getWeather(0);
-        ArrayList<WeatherHour> tomorrowWeatherHour = weatherForecast.getWeather(1);
-
-        Calendar currentCal = Calendar.getInstance();
-        int hour = currentCal.get(Calendar.HOUR_OF_DAY);
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
         for (int i = 0; i < 10; i++) {
 
             if (i + hour < weatherHour.size()) {
                 DetailedRow dr = new DetailedRow();
-                detailedRows.add(dr);
-                detailed.add(dr.getPanel(weatherHour.get(i + hour)));
+                mDetailedPanel.add(dr.getPanel(weatherHour.get(i + hour)));
             } else if (i + hour == weatherHour.size()) {
+
+                tomorrowWeatherHour = mWeatherForecast.getWeather(1);
+
                 JPanel panel = new JPanel(new BorderLayout());
                 panel.setBackground(new Color(138, 192, 239));
 
                 JLabel label = new JLabel("Tomorrow");
-                System.out.println(label.getFont().getSize());
                 label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16));
                 label.setHorizontalAlignment(JLabel.CENTER);
                 panel.add(label);
-                detailed.add(panel);
+                mDetailedPanel.add(panel);
             } else {
                 DetailedRow dr = new DetailedRow();
-                detailedRows.add(dr);
-                detailed.add(dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24)));
+                mDetailedPanel.add(dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24)));
             }
         }
     }
