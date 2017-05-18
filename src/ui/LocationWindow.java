@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.Random;
 
 public class LocationWindow extends JFrame {
-
-    private static final int WIDTH = 394;
+	private static final long serialVersionUID = 1L;
+	
+	private static final int WIDTH = 394;
     private static final int HEIGHT = 700;
     private static final Color backColour = new Color(138, 192, 239);
     private static GridBagConstraints constraints = new GridBagConstraints();

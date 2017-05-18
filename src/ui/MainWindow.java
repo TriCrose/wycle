@@ -3,8 +3,6 @@ package ui;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
-import aurelienribon.slidinglayout.*;
-
 import java.awt.*;
 import java.util.ArrayList;
 
