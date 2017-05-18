@@ -38,13 +38,13 @@ public class LocationWindow extends JFrame {
         setLayout(new GridBagLayout());
         getContentPane().setBackground(backColour);
 
-        searchBar = addPanel(new JPanel(), 0, 0.01);
+        searchBar = addPanel(new JPanel(new BorderLayout()), 0, 0.01);
         drawSearchBar();
 
-        suggestions = addPanel(new JPanel(), 1, 0.01);
+        suggestions = addPanel(new JPanel(new BorderLayout()), 1, 0.01);
         drawSuggestions();
 
-        recentLocations = addPanel(new JPanel(new GridLayout(0, 1)), 2, 0.75);
+        recentLocations = addPanel(new JPanel(new GridLayout(0, 1, 0, 10)), 2, 0.75);
         drawRecentLocations();
 
         setVisible(true);
@@ -76,6 +76,8 @@ public class LocationWindow extends JFrame {
     private void drawSearchBar() {
 
         JTextField textField = new JTextField(10);
+
+        textField.setBackground(new Color(138, 192, 239));
 
         textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -132,6 +134,7 @@ public class LocationWindow extends JFrame {
         }
 
         JList list = new JList(suggestionListModel);
+        list.setBackground(new Color(138, 192, 239));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         list.addListSelectionListener(e -> {
@@ -151,10 +154,15 @@ public class LocationWindow extends JFrame {
 
         recentsList = new ArrayList<>();
         ArrayList<LocationObject> cities = LocationStore.getCities();
+
         for (int i = 0; i < 6; i++) {
             RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())).getCity());
             recentsList.add(rr);
-            recentLocations.add(rr.getPanel());
+
+            JPanel panel = rr.getPanel();
+            recentLocations.add(panel);
+
+            panel.setBackground(new Color(160, 220, 255));
         }
     }
 }
