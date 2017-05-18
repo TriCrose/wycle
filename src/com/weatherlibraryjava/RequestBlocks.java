@@ -151,7 +151,41 @@ public class RequestBlocks {
         }
         public static String PrepareDays(Days days)
         {
-            return "days=" + days;
+            int day = 0;
+            switch(days)
+            {
+                case One:
+                    day = 1;
+                    break;
+                case Two:
+                    day = 2;
+                    break;
+                case Three:
+                    day = 3;
+                    break;
+                case Four:
+                    day = 4;
+                    break;
+                case Five:
+                    day = 5;
+                    break;
+                case Six:
+                    day = 6;
+                    break;
+                case Seven:
+                    day = 7;
+                    break;
+                case Eight:
+                    day = 8;
+                    break;
+                case Nine:
+                    day = 9;
+                    break;
+                case Ten:
+                    day = 10;
+                    break;
+            }
+            return "days=" + Integer.toString(day);
         }
 
 

@@ -1,12 +1,8 @@
 package apixu;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-import com.sun.xml.internal.fastinfoset.algorithm.IntegerEncodingAlgorithm;
-import com.weatherlibrary.datamodel.Day;
 import com.weatherlibrary.datamodel.WeatherModel;
 import com.weatherlibraryjava.Repository;
 import com.weatherlibraryjava.RequestBlocks;
-import com.weathertest.MainWeather;
 import location.LocationObject;
 
 import java.util.ArrayList;
@@ -58,13 +54,13 @@ public class WeatherForecast {
      *
      * @param day indicates the number of days from today that the user wishes
      *            to retrieve, 0 is today, 1 is tomorrow etc.
-     * @return list of 24 WeatherRow objects, each containing wind, rain, temperature
+     * @return list of 24 WeatherHour objects, each containing wind, rain, temperature
      *         and condition for every hour of the requested day
      */
-    public ArrayList<WeatherRow> getWeather(int day) {
-        ArrayList<WeatherRow> table = new ArrayList<>();
+    public ArrayList<WeatherHour> getWeather(int day) {
+        ArrayList<WeatherHour> table = new ArrayList<>();
         for (int i = 0; i<24; i++) {
-            WeatherRow row = new WeatherRow();
+            WeatherHour row = new WeatherHour();
             String time = "";
             if (i < 10) time = "0";
             time += Integer.toString(i) + ":00";
@@ -80,13 +76,14 @@ public class WeatherForecast {
     }
 
     /**
-     * Get weather data for the current time
+     * Overloaded method, not specifying a da will retrieve weather data for the current time
+     * Returns a single set of data i.e. for the current hour
      *
-     * @return a single WeatherRow object, containing the temp, wind, rain and condition
-     *         for the current time
+     * @return a single WeatherHour object, containing the temp, wind, rain and condition
+     *         for the current hour
      */
-    public WeatherRow getWeather() {
-        WeatherRow row = new WeatherRow();
+    public WeatherHour getWeather() {
+        WeatherHour row = new WeatherHour();
         row.setmCondition(mWeatherModel.current.getCondition());
         row.setmRain(mWeatherModel.current.getPrecipMm());
         row.setmTemp(mWeatherModel.current.getTempC());

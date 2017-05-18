@@ -2,7 +2,7 @@ package apixu;
 
 import com.weatherlibrary.datamodel.Condition;
 
-public class WeatherRow {
+public class WeatherHour {
 
     //24 hour time, as a string
     private String mTime;
