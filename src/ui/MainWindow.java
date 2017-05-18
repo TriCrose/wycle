@@ -1,10 +1,13 @@
 package ui;
 
+import apixu.WeatherForecast;
+import apixu.WeatherHour;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainWindow extends JFrame {
 
@@ -21,6 +24,8 @@ public class MainWindow extends JFrame {
 
     private String currentDay = "Today";// Please change accordingly
     private ArrayList<DetailedRow> detailedRows;
+
+    private WeatherForecast weatherForecast = new WeatherForecast();
 
 
     public MainWindow() {
@@ -108,10 +113,16 @@ public class MainWindow extends JFrame {
 
         detailedRows = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        ArrayList<WeatherHour> weatherHour = weatherForecast.getWeather(0);
+
+        Calendar currentCal = Calendar.getInstance();
+        int hour = currentCal.get(Calendar.HOUR_OF_DAY);
+        System.out.println(hour);
+
+        for (int i = 0; i < 10 && i + hour < weatherHour.size(); i++) {
             DetailedRow dr = new DetailedRow();
             detailedRows.add(dr);
-            detailed.add(dr.getPanel());
+            detailed.add(dr.getPanel(weatherHour.get(i + hour)));
         }
     }
 }

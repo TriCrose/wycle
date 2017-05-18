@@ -13,22 +13,31 @@ import java.util.List;
 import java.util.Random;
 
 public class LocationWindow extends JFrame {
-	private static final long serialVersionUID = 1L;
-	
-	private static final int WIDTH = 394;
+
+    private static final long serialVersionUID = 1L;
+
+    private static final int WIDTH = 394;
     private static final int HEIGHT = 700;
     private static final Color backColour = new Color(138, 192, 239);
     private static GridBagConstraints constraints = new GridBagConstraints();
 
+    // Panels for the windows
     private JPanel searchBar;
     private JPanel suggestions;
     private JPanel recentLocations;
 
+    // List model for the JList for suggestions
     private DefaultListModel suggestionListModel;
 
+    // List of recent locations and their weather
     private ArrayList<RecentsRow> recentsList;
 
 
+    /**
+     * Create a new LocationWindow.
+     * <p>
+     * This sets the window to have the searchbar, suggestions list and recentLocations
+     */
     public LocationWindow() {
 
         super("Wycle");
@@ -135,6 +144,7 @@ public class LocationWindow extends JFrame {
         }
 
         JList list = new JList(suggestionListModel);
+
         list.setBackground(new Color(138, 192, 239));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
