@@ -10,6 +10,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class LocationWindow extends JFrame {
 
@@ -125,13 +126,20 @@ public class LocationWindow extends JFrame {
 
         suggestionListModel = new DefaultListModel();
 
-        Object[] cities = LocationStore.getCities().toArray();
-        for (Object o : cities) {
-            suggestionListModel.addElement(o);
+        ArrayList<LocationObject> cities = LocationStore.getCities();
+        for (LocationObject lo : cities) {
+            suggestionListModel.addElement(lo.getCity() + ", " + lo.getCountry());
         }
 
         JList list = new JList(suggestionListModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        list.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // List item selected
+                System.out.println("clicked " + list.getSelectedValue());
+            }
+        });
 
         JScrollPane scrollPane = new JScrollPane(list);
 
@@ -142,9 +150,9 @@ public class LocationWindow extends JFrame {
     private void drawRecentLocations() {
 
         recentsList = new ArrayList<>();
-
+        ArrayList<LocationObject> cities = LocationStore.getCities();
         for (int i = 0; i < 6; i++) {
-            RecentsRow rr = new RecentsRow("place");
+            RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())).getCity());
             recentsList.add(rr);
             recentLocations.add(rr.getPanel());
         }
