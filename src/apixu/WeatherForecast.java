@@ -1,11 +1,14 @@
 package apixu;
 
+import com.weatherlibrary.datamodel.Condition;
 import com.weatherlibrary.datamodel.WeatherModel;
 import com.weatherlibraryjava.Repository;
 import com.weatherlibraryjava.RequestBlocks;
 import location.LocationObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class WeatherForecast {
@@ -52,53 +55,61 @@ public class WeatherForecast {
     /**
      * Get hourly weather data for a specified day
      *
-     * @param day indicates the number of days from today that the user wishes
-     *            to retrieve, 0 is today, 1 is tomorrow etc.
+     * @param day the day 'x' days after today that you want to retrieve, 0 is today,
+     *            1 is tomorrow etc.
      * @return list of 24 WeatherHour objects, each containing wind, rain, temperature
      *         and condition for every hour of the requested day
      */
     public ArrayList<WeatherHour> getWeather(int day) {
         ArrayList<WeatherHour> table = new ArrayList<>();
         for (int i = 0; i<24; i++) {
-            WeatherHour row = new WeatherHour();
             String time = "";
             if (i < 10) time = "0";
             time += Integer.toString(i) + ":00";
-
-            row.setmTime(time);
-            row.setmWind(mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getWindMph());
-            row.setmTemp(mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getTempC());
-            row.setmRain(mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getPrecipMm());
-            row.setmCondition(mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getCondition());
-            table.add(row);
+            double wind = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getWindMph();
+            double temp = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getTempC();
+            double rain = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getPrecipMm();
+            Condition cond = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getCondition();
+            WeatherHour wHour = new WeatherHour(time, temp, wind, rain, cond);
+            table.add(wHour);
         }
         return table;
     }
 
     /**
-     * Overloaded method, not specifying a da will retrieve weather data for the current time
+     * Overloaded method, not specifying a day will retrieve weather data for the current time
      * Returns a single set of data i.e. for the current hour
      *
      * @return a single WeatherHour object, containing the temp, wind, rain and condition
      *         for the current hour
      */
     public WeatherHour getWeather() {
-        WeatherHour row = new WeatherHour();
-        row.setmCondition(mWeatherModel.current.getCondition());
-        row.setmRain(mWeatherModel.current.getPrecipMm());
-        row.setmTemp(mWeatherModel.current.getTempC());
-        row.setmWind(mWeatherModel.current.getWindMph());
-        return row;
+        Condition cond = mWeatherModel.current.getCondition();
+        double rain = mWeatherModel.current.getPrecipMm();
+        double temp = mWeatherModel.current.getTempC();
+        double wind = mWeatherModel.current.getWindMph();
+        return new WeatherHour(null, temp, wind, rain, cond);
     }
 
+    /**
+     * Takes a day and returns a weather summary for that day, containing min/max/avg temp,
+     * max wind speed, and total rainfall
+     *
+     * @param day the day 'x' days after today that you want to retreive,
+     *            0 is today, 1 is tomorrow etc.
+     * @return WeatherDay object that contains all the weather data
+     */
     public WeatherDay getDaySummary(int day) {
-        WeatherDay wDay = new WeatherDay();
-        wDay.setmAvgTemp(mWeatherModel.forecast.forecastday.get(day).getDay().avgtemp_c);
-        wDay.setmMaxTemp(mWeatherModel.forecast.forecastday.get(day).getDay().maxtemp_c);
-        wDay.setmMinTemp(mWeatherModel.forecast.forecastday.get(day).getDay().mintemp_c);
-        wDay.setmMaxWind(mWeatherModel.forecast.forecastday.get(day).getDay().maxwind_mph);
-        wDay.setmTotalRain(mWeatherModel.forecast.forecastday.get(day).getDay().totalprecip_mm);
-        return wDay;
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, day);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        String dayName = sdf.format(c.getTime());
+        double avgT = mWeatherModel.forecast.forecastday.get(day).getDay().avgtemp_c;
+        double maxT = mWeatherModel.forecast.forecastday.get(day).getDay().maxtemp_c;
+        double minT = mWeatherModel.forecast.forecastday.get(day).getDay().mintemp_c;
+        double wind = mWeatherModel.forecast.forecastday.get(day).getDay().maxwind_mph;
+        double rain = mWeatherModel.forecast.forecastday.get(day).getDay().totalprecip_mm;
+        return new WeatherDay(dayName, wind, avgT, maxT, minT, rain);
     }
 
 }

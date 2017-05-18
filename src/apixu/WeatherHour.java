@@ -21,39 +21,32 @@ public class WeatherHour {
 
     //getters and setters for all members
 
+    public WeatherHour(String time, double temp, double wind, double rain, Condition cond) {
+        this.mCondition = cond;
+        this.mTime = time;
+        this.mWind = wind;
+        this.mRain = rain;
+        this.mTemp = temp;
+    }
+
     public String getmTime() {
         return mTime;
-    }
-    public void setmTime(String mTime) {
-        this.mTime = mTime;
     }
 
     public double getmTemp() {
         return mTemp;
     }
-    public void setmTemp(double mTemp) {
-        this.mTemp = mTemp;
-    }
 
     public double getmWind() {
         return mWind;
-    }
-    public void setmWind(double mWind) {
-        this.mWind = mWind;
     }
 
     public double getmRain() {
         return mRain;
     }
-    public void setmRain(double mRain) {
-        this.mRain = mRain;
-    }
 
     public Condition getmCondition() {
         return mCondition;
-    }
-    public void setmCondition(Condition mCondition) {
-        this.mCondition = mCondition;
     }
 }
 
