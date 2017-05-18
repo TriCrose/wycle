@@ -38,7 +38,6 @@ public class LocationStore {
 
         if (null == instance) {
             instance = new LocationStore();
-            return instance;
         }
         return instance;
     }
