@@ -1,0 +1,12 @@
+This is not everything, I'm taking a break now. Remainder to come this weekend!
+
+Images in the 'reference' folder are icons+backgrounds that allow 
+you to see what the picture should look like inside the app.
+
+Please use the images inside the 'use_tese' folder, and be careful 
+to enable transparency.
+
+I'll provide rectangular versions later, I need to know what dimensions
+they should have first.
+
+K
