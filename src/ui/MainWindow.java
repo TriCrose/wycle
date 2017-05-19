@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * Main class which holds the home screen, this includes: day; icons; rain and wind; detailed view;
+ */
 public class MainWindow extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -68,6 +71,12 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * @param panel  panel to be used to be added
+     * @param gridY  desired position of the panel
+     * @param weight weight of the panel
+     * @return The panel given
+     */
     private JPanel addPanel(JPanel panel, int gridY, double weight) {
 
         panel.setBackground(backColour);
@@ -84,8 +93,12 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * Draw the day info, changes day automatically depending on the dayIndex (acts like offset)
+     */
     private void drawDay() {
 
+        // Set the text for the day to be the correct text
         if (mDayIndex != 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DATE, mDayIndex);
@@ -94,11 +107,13 @@ public class MainWindow extends JFrame {
             mCurrentDay = "Today";
         }
 
+        // Make a new label and style it
         JLabel labelDay = new JLabel(mCurrentDay);
         labelDay.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
         labelDay.setHorizontalAlignment(JLabel.CENTER);
         mDayPanel.add(labelDay);
 
+        // Button for going to the location screen
         JButton buttonLocation = new JButton();
         mDayPanel.add(buttonLocation, BorderLayout.LINE_END);
 
@@ -109,25 +124,35 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * Draw the icons for the main weather display, bike coefficient and symbol
+     */
     private void drawIcons() {
 
+        // Set up the labels
         JLabel labelBikeCoefficient = new JLabel("bike coefficient");
         JLabel labelWeatherIcon = new JLabel("weather icon");
 
+        // Center them
         labelBikeCoefficient.setHorizontalAlignment(JLabel.CENTER);
         labelWeatherIcon.setHorizontalAlignment(JLabel.CENTER);
 
+        // Add them to the panel
         mIconsPanel.add(labelBikeCoefficient);
         mIconsPanel.add(labelWeatherIcon);
     }
 
 
+    /**
+     * Add the rain, wind and temperature to the main panel
+     */
     private void drawRainWind() {
 
         double rain;
         double temp;
         double wind;
 
+        // Get current weather for today or get average day weather for other days
         if (mDayIndex == 0) {
 
             WeatherHour currentWeather = mWeatherForecast.getWeather();
@@ -144,10 +169,12 @@ public class MainWindow extends JFrame {
             wind = currentWeather.getMaxWind();
         }
 
+        // Make the labels
         JLabel labelRain = new JLabel(rain + " mm");
         JLabel labelTemp = new JLabel(temp + " °C");
         JLabel labelWind = new JLabel(wind + " mph");
 
+        // Style the labels
         labelRain.setHorizontalAlignment(JLabel.CENTER);
         labelRain.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
@@ -155,12 +182,16 @@ public class MainWindow extends JFrame {
         labelWind.setHorizontalAlignment(JLabel.CENTER);
         labelWind.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
 
+        // Add the labels
         mRainWindPanel.add(labelRain);
         mRainWindPanel.add(labelTemp);
         mRainWindPanel.add(labelWind);
     }
 
 
+    /**
+     * Detailed rows will be drawn for each hour of the current day
+     */
     private void drawDetailed() {
 
         ArrayList<WeatherHour> weatherHour = mWeatherForecast.getWeather(mDayIndex);
@@ -168,12 +199,14 @@ public class MainWindow extends JFrame {
 
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
+        // draw the panels, conditional for whether we can fill the space with just today's weather or need to add
+        // tomorrows
         for (int i = 0; i < 10; i++) {
 
             if (i + hour < weatherHour.size()) {
                 DetailedRow dr = new DetailedRow();
                 mDetailedPanel.add(dr.getPanel(weatherHour.get(i + hour)));
-            } else if (i + hour == weatherHour.size()) {
+            } else if (i + hour == weatherHour.size() && i != 9) {
 
                 tomorrowWeatherHour = mWeatherForecast.getWeather(1);
 
