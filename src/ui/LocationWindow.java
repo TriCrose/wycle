@@ -226,16 +226,19 @@ public class LocationWindow extends JFrame {
                 RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())));
                 mRecentsList.add(rr);
 
+                rr.updateWeather();
+
                 JPanel panel = rr.getPanel();
                 mRecentLocationsPanel.add(panel);
 
                 panel.setBackground(new Color(160, 220, 255));
             }
+            setRecentLocations();
         } else {
 
             // Draw the recent panels with their locations
             for (int i = 0; i < 6; i++) {
-
+                mRecentsList.get(i).updateWeather();
                 JPanel panel = mRecentsList.get(i).getPanel();
                 mRecentLocationsPanel.add(panel);
 
@@ -247,7 +250,6 @@ public class LocationWindow extends JFrame {
 
     private void incrementFrequency(LocationObject lo) {
 
-        System.out.println("incrementing " + lo);
 
         boolean updated = false;
 
@@ -257,7 +259,6 @@ public class LocationWindow extends JFrame {
                 updated = true;
 
                 rr.incrementFrequency();
-                System.out.println("frequency: " + rr.getmFrequency());
             }
         }
 
@@ -276,7 +277,7 @@ public class LocationWindow extends JFrame {
             mRecentsList = (ArrayList<RecentsRow>) ois.readObject();
         } catch (FileNotFoundException e) {
             System.out.println("The file to output to could not be found");
-            e.printStackTrace();
+            System.out.println("A new file will be created");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -284,6 +285,9 @@ public class LocationWindow extends JFrame {
 
 
     private void setRecentLocations() {
+
+        mRecentsList.sort((o1, o2) -> o2.getmFrequency() - o1.getmFrequency());
+
         // Write the current data out to file
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mFrequentsPath))) {
 

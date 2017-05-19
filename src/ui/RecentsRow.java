@@ -33,12 +33,22 @@ public class RecentsRow implements Serializable {
         mLocationObject = lo;
         mPlaceName = lo.getCity();
         mFrequency = 1;
+    }
 
-        mIcon = 0;
 
-        WeatherForecast weatherForecast = new WeatherForecast(lo);
+    @Override
+    public String toString() {
 
+        return "RecentsRow{" + "mFrequency=" + mFrequency + ", mPlaceName='" + mPlaceName + '\'' + ", mIcon=" + mIcon
+                + ", mTemp=" + mTemp + ", mRowPanel=" + mRowPanel + ", mLocationObject=" + mLocationObject + '}';
+    }
+
+
+    public void updateWeather() {
+
+        WeatherForecast weatherForecast = new WeatherForecast(mLocationObject);
         mTemp = weatherForecast.getWeather().getmTemp();
+        mIcon = 0;
     }
 
 
@@ -56,6 +66,7 @@ public class RecentsRow implements Serializable {
         return mLocationObject;
     }
 
+
     public int getmFrequency() {
 
         return mFrequency;
@@ -65,6 +76,7 @@ public class RecentsRow implements Serializable {
     /**
      * Create a new panel to store the recent location's data. This sets up the weather data in the correct
      * display order
+     *
      * @return JPanel: the panel which contains the weather data in a GridLayout
      */
     public JPanel getPanel() {
