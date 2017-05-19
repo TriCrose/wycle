@@ -8,6 +8,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -71,7 +73,7 @@ public class LocationWindow extends JFrame {
 
     public static void main(String[] args) {
 
-        LocationWindow lw = new LocationWindow();
+        new LocationWindow();
     }
 
 
@@ -184,6 +186,7 @@ public class LocationWindow extends JFrame {
 
         // Styling background
         list.setBackground(backColour);
+
         // Can only click on one item at a time
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -195,13 +198,27 @@ public class LocationWindow extends JFrame {
                 // List item selected
                 System.out.println("clicked " + list.getSelectedValue());
 
-                incrementFrequency((LocationObject) list.getSelectedValue());
+                incrementFrequency(list.getSelectedValue());
+            }
+        });
+
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+                list.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+                list.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
         // Scrollable list so that all results can be found
         JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         scrollPane.setBackground(backColour);
 
         mSuggestionsPanel.add(scrollPane);
@@ -308,6 +325,11 @@ public class LocationWindow extends JFrame {
                                                       boolean cellHasFocus) {
 
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+
+            if (index % 2 == 0) setBackground(new Color(160, 220, 255));
+            else setBackground(new Color(138, 192, 239));
 
             try {
                 String cityName = (String) value.getClass().getDeclaredMethod("getCity", null).invoke(value);

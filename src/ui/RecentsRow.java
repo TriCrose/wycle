@@ -5,6 +5,8 @@ import location.LocationObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.Serializable;
 
 /**
@@ -100,6 +102,30 @@ public class RecentsRow implements Serializable {
 
         // Same colour as main background
         mRowPanel.setBackground(new Color(138, 192, 239));
+
+        mRowPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+                System.out.println("mouse event here");
+                System.out.println("change to new screen with this location");
+                System.out.println(mLocationObject.getCity());
+            }
+
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+                mRowPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+                mRowPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
 
         return mRowPanel;
     }
