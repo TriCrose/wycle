@@ -8,6 +8,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -31,15 +33,17 @@ public class LocationWindow extends JFrame {
     private JPanel mRecentLocationsPanel;
 
     // List model for the JList for mSuggestionsPanel
-    private DefaultListModel mSuggestionListModel;
+    private DefaultListModel<LocationObject> mSuggestionListModel;
 
     // List of recent locations and their weather
     private ArrayList<RecentsRow> mRecentsList;
+    // File location for location frequencies
+    private String mFrequentsPath = "data/location_frequencies";
 
 
     /**
      * Create a new LocationWindow.
-     *
+     * <p>
      * This sets the window to have the searchbar, suggestions list and recentLocations
      */
     public LocationWindow() {
@@ -70,7 +74,7 @@ public class LocationWindow extends JFrame {
 
     public static void main(String[] args) {
 
-        new LocationWindow();
+        LocationWindow lw = new LocationWindow();
     }
 
 
@@ -105,7 +109,7 @@ public class LocationWindow extends JFrame {
         JTextField textField = new JTextField(10);
 
         // Same colour as main background
-        textField.setBackground(new Color(138, 192, 239));
+        textField.setBackground(backColour);
 
         // Add a listener for when a character is typed or removed in the textfield
         textField.getDocument().addDocumentListener(new DocumentListener() {
@@ -148,6 +152,7 @@ public class LocationWindow extends JFrame {
 
     /**
      * Update the current suggestions to show the matching cities
+     *
      * @param searchResult The list of locations which match the current text in the textfield
      */
     private void updateSuggestions(List<LocationObject> searchResult) {
@@ -157,7 +162,7 @@ public class LocationWindow extends JFrame {
         // Repopulate the model
         if (searchResult.size() > 0) {
             for (LocationObject s : searchResult) {
-                mSuggestionListModel.addElement(s.getCity());
+                mSuggestionListModel.addElement(s);
             }
         }
     }
@@ -168,36 +173,39 @@ public class LocationWindow extends JFrame {
      */
     private void drawSuggestions() {
 
-        mSuggestionListModel = new DefaultListModel();
+        mSuggestionListModel = new DefaultListModel<>();
 
         // Get cities and format them before adding them to the listModel
         ArrayList<LocationObject> cities = LocationStore.getCities();
         for (LocationObject lo : cities) {
-            mSuggestionListModel.addElement(lo.getCity() + ", " + lo.getCountry());
+            mSuggestionListModel.addElement(lo);
         }
 
         // Make a new list from the model above
-        JList list = new JList(mSuggestionListModel);
+        JList<LocationObject> list = new JList<>(mSuggestionListModel);
+        list.setCellRenderer(new CustomListCellRenderer());
 
         // Styling background
-        list.setBackground(new Color(138, 192, 239));
+        list.setBackground(backColour);
         // Can only click on one item at a time
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // When an item is clicked and the cursor is not adjusting this value (ensures only act on click release)
         // the action is carried out
-        // TODO: change action to switch to switch to selected weather page
+        // TODO: change action to switch to selected weather page
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 // List item selected
                 System.out.println("clicked " + list.getSelectedValue());
+
+                incrementFrequency((LocationObject) list.getSelectedValue());
             }
         });
 
         // Scrollable list so that all results can be found
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        scrollPane.setBackground(new Color(138, 192, 239));
+        scrollPane.setBackground(backColour);
 
         mSuggestionsPanel.add(scrollPane);
     }
@@ -209,19 +217,105 @@ public class LocationWindow extends JFrame {
     private void drawRecentLocations() {
 
         // Get the cities
-        mRecentsList = new ArrayList<>();
-        ArrayList<LocationObject> cities = LocationStore.getCities();
 
-        // Draw the recent panels with their locations
-        for (int i = 0; i < 6; i++) {
-            // Select random city as we currently don't use the app enough to generate these properly
-            RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())));
+        getRecentLocations();
+
+        if (mRecentsList == null) {
+            // Need to auto generate some random cities
+
+            ArrayList<LocationObject> cities = LocationStore.getCities();
+            mRecentsList = new ArrayList<>();
+            for (int i = 0; i < 6; i++) {
+                RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())));
+                mRecentsList.add(rr);
+
+                JPanel panel = rr.getPanel();
+                mRecentLocationsPanel.add(panel);
+
+                panel.setBackground(new Color(160, 220, 255));
+            }
+        } else {
+
+            // Draw the recent panels with their locations
+            for (int i = 0; i < 6; i++) {
+
+                JPanel panel = mRecentsList.get(i).getPanel();
+                mRecentLocationsPanel.add(panel);
+
+                panel.setBackground(new Color(160, 220, 255));
+            }
+        }
+    }
+
+
+    private void incrementFrequency(LocationObject lo) {
+
+        System.out.println("incrementing " + lo);
+
+        boolean updated = false;
+
+        for (RecentsRow rr : mRecentsList) {
+            // intended to test by reference
+            if (rr.getmLocationObject() == lo) {
+                updated = true;
+
+                rr.incrementFrequency();
+                System.out.println("frequency: " + rr.getmFrequency());
+            }
+        }
+
+        if (!updated) {
+            RecentsRow rr = new RecentsRow(lo);
             mRecentsList.add(rr);
+        }
+        setRecentLocations();
+    }
 
-            JPanel panel = rr.getPanel();
-            mRecentLocationsPanel.add(panel);
 
-            panel.setBackground(new Color(160, 220, 255));
+    private void getRecentLocations() {
+        // Read in current frequency data from file
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(mFrequentsPath))) {
+
+            mRecentsList = (ArrayList<RecentsRow>) ois.readObject();
+        } catch (FileNotFoundException e) {
+            System.out.println("The file to output to could not be found");
+            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void setRecentLocations() {
+        // Write the current data out to file
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mFrequentsPath))) {
+
+            oos.writeObject(mRecentsList);
+        } catch (FileNotFoundException e) {
+            System.out.println("The file to output to could not be found");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public class CustomListCellRenderer extends DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+                                                      boolean cellHasFocus) {
+
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            try {
+                String cityName = (String) value.getClass().getDeclaredMethod("getCity", null).invoke(value);
+                String countryName = (String) value.getClass().getDeclaredMethod("getCountry", null).invoke(value);
+                label.setText(cityName + ", " + countryName);
+            } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            return label;
         }
     }
 }

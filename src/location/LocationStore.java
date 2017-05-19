@@ -3,7 +3,9 @@ package location;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
 /**
@@ -65,13 +67,13 @@ public class LocationStore {
         ArrayList<LocationObject> results = new ArrayList<>();
 
         String lowerInput = input.toLowerCase();
-        Map<LocationObject, Integer> cityIndices = new TreeMap<>();
+        ArrayList<LocationIndexPair> cityIndices = new ArrayList<>();
 
         // for each city which contains the given string, put it with the index of the substring in the map
         for (LocationObject city : cities) {
             int substringIndex = city.getCity().toLowerCase().indexOf(lowerInput);
             if (substringIndex != -1) {
-                cityIndices.put(city, substringIndex);
+                cityIndices.add(new LocationIndexPair(city, substringIndex));
             }
         }
         int i = 0;
@@ -85,17 +87,17 @@ public class LocationStore {
 
 
     /**
-     * @param map   the map of (city name, index of matching) pairs
+     * @param list   the list of (city name, index of matching) pairs
      * @param value the current value which we care about
      * @return A list of all the city names which have the match position at the value position
      */
-    private static ArrayList<LocationObject> getAllMatchingValues(Map<LocationObject, Integer> map, int value) {
+    private static ArrayList<LocationObject> getAllMatchingValues(ArrayList<LocationIndexPair> list, int value) {
 
         ArrayList<LocationObject> result = new ArrayList<>();
-        for (Iterator<Map.Entry<LocationObject, Integer>> it = map.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<LocationObject, Integer> entry = it.next();
-            if (entry.getValue() == value) {
-                result.add(entry.getKey());
+        for (Iterator<LocationIndexPair> it = list.iterator(); it.hasNext(); ) {
+            LocationIndexPair pair = it.next();
+            if (pair.getIndex() == value) {
+                result.add(pair.getLocationObject());
                 it.remove();
             }
         }
@@ -117,6 +119,7 @@ public class LocationStore {
             stream.skip(1).forEach(l -> {
                 String[] locations = l.split(",");
                 LocationObject lo;
+
                 if (locations.length >= 9) {
                     lo = new LocationObject(locations[0], locations[2], locations[3], locations[5], locations[8]);
                 } else {

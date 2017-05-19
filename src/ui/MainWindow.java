@@ -211,7 +211,7 @@ public class MainWindow extends JFrame {
                 tomorrowWeatherHour = mWeatherForecast.getWeather(1);
 
                 JPanel panel = new JPanel(new BorderLayout());
-                panel.setBackground(new Color(138, 192, 239));
+                panel.setBackground(backColour);
 
                 JLabel label = new JLabel("Tomorrow");
                 label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16));
@@ -220,6 +220,7 @@ public class MainWindow extends JFrame {
                 mDetailedPanel.add(panel);
             } else {
                 DetailedRow dr = new DetailedRow();
+                assert tomorrowWeatherHour != null;
                 mDetailedPanel.add(dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24)));
             }
         }

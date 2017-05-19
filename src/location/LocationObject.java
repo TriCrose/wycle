@@ -1,9 +1,11 @@
 package location;
 
+import java.io.Serializable;
+
 /**
  * Class to store relevant location data
  */
-public class LocationObject implements Comparable<LocationObject> {
+public class LocationObject implements Comparable<LocationObject>, Serializable {
 
     private String city;
     private String lat;

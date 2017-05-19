@@ -96,7 +96,7 @@ public class WeatherForecast {
      * Takes a day and returns a weather summary for that day, containing min/max/avg temp,
      * max wind speed, and total rainfall
      *
-     * @param day the day 'x' days after today that you want to retreive,
+     * @param day the day 'x' days after today that you want to retrieve,
      *            0 is today, 1 is tomorrow etc.
      * @return WeatherDay object that contains all the weather data
      */

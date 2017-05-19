@@ -5,11 +5,12 @@ import location.LocationObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * Store the relevant data for the recent locations to be displayed on the locationWindow
  */
-public class RecentsRow {
+public class RecentsRow implements Serializable {
 
     //Frequency: The number of times this location has been used recently
     private int mFrequency;
@@ -19,6 +20,8 @@ public class RecentsRow {
 
     private JPanel mRowPanel;
 
+    private LocationObject mLocationObject;
+
 
     /**
      * Set the fields and get the weather data for the given location
@@ -27,8 +30,11 @@ public class RecentsRow {
      */
     public RecentsRow(LocationObject lo) {
 
+        mLocationObject = lo;
         mPlaceName = lo.getCity();
-        mFrequency = 0;
+        mFrequency = 1;
+
+        mIcon = 0;
 
         WeatherForecast weatherForecast = new WeatherForecast(lo);
 
@@ -44,6 +50,11 @@ public class RecentsRow {
         mFrequency++;
     }
 
+
+    public LocationObject getmLocationObject() {
+
+        return mLocationObject;
+    }
 
     public int getmFrequency() {
 
