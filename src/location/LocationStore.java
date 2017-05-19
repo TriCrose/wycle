@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  * A singleton class to store all the locations which can be chosen by the user.
  * Provides functionality to read in a list of cities from a text file; get the list
  * of cities and also search the list for cities containing a given string.
- *
+ * <p>
  * Recommend getting the first instance as part of app start-up process
  */
 public class LocationStore {
@@ -66,12 +66,18 @@ public class LocationStore {
         // Start with a linear search to return basic results
         ArrayList<LocationObject> results = new ArrayList<>();
 
-        String lowerInput = input.toLowerCase();
+        String lowerInput = input.toLowerCase().replaceAll(",\\s+", ",");
         ArrayList<LocationIndexPair> cityIndices = new ArrayList<>();
 
         // for each city which contains the given string, put it with the index of the substring in the map
         for (LocationObject city : cities) {
-            int substringIndex = city.getCity().toLowerCase().indexOf(lowerInput);
+
+            String searchString = (city.getCity() + "," + city.getCountry()).toLowerCase();
+
+            int substringIndex = searchString.indexOf(lowerInput);
+
+//            int substringIndex = city.getCity().toLowerCase().indexOf(lowerInput);
+
             if (substringIndex != -1) {
                 cityIndices.add(new LocationIndexPair(city, substringIndex));
             }
@@ -87,7 +93,7 @@ public class LocationStore {
 
 
     /**
-     * @param list   the list of (city name, index of matching) pairs
+     * @param list  the list of (city name, index of matching) pairs
      * @param value the current value which we care about
      * @return A list of all the city names which have the match position at the value position
      */
