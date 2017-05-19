@@ -12,8 +12,6 @@ import java.util.Locale;
 public class WeekWindow extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private static final int WIDTH = 394;
-    private static final int HEIGHT = 700;
     private static final Color backColour = new Color(138, 192, 239);
     private static GridBagConstraints constraints = new GridBagConstraints();
     WeatherForecast mWeatherForecast;
@@ -26,7 +24,7 @@ public class WeekWindow extends JFrame {
         super("Wycle");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-        setSize(WIDTH, HEIGHT);
+        setSize(AppParams.WIDTH, AppParams.HEIGHT);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
         getContentPane().setBackground(backColour);
