@@ -1,10 +1,11 @@
 package ui;
 
+import apixu.WeatherForecast;
 import location.LocationObject;
 import location.LocationStore;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -48,23 +49,25 @@ public class LocationWindow extends JFrame {
     public LocationWindow() {
 
         super("Wycle");
+
+        setBackgroundImage();
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         setSize(AppParams.WIDTH, AppParams.HEIGHT);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
-        getContentPane().setBackground(backColour);
 
         mSearchBarPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.01);
+        mSearchBarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
         drawSearchBar();
 
-        mSuggestionsPanel = addPanel(new JPanel(new BorderLayout()), 1, 0.01);
+        mSuggestionsPanel = addPanel(new JPanel(new BorderLayout()), 1, 0.24);
+        mSuggestionsPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         drawSuggestions();
 
         mRecentLocationsPanel = addPanel(new JPanel(new GridLayout(0, 1, 0, 10)), 2, 0.75);
-        mRecentLocationsPanel.setBorder(BorderFactory
-                .createCompoundBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory
-                        .createEmptyBorder(5, 5, 5, 5)));
+        mRecentLocationsPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         drawRecentLocations();
 
         setVisible(true);
@@ -77,6 +80,25 @@ public class LocationWindow extends JFrame {
     }
 
 
+    private void setBackgroundImage() {
+
+        WeatherForecast weatherForecast = new WeatherForecast();
+        boolean isDay = weatherForecast.getWeather().getIsDay() == 1;
+
+        String path = "art/use_these/backgrounds/";
+        if (isDay) path += "background_day[bg].png";
+        else path += "background_night[bg].png";
+
+        try {
+            Image backgroundImage = ImageIO.read(new File(path));
+            JLabel background = new JLabel(new ImageIcon(backgroundImage));
+            this.setContentPane(background);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * @param panel  created panel which needs to be added to the main frame
      * @param gridY  The position in the layout for this panel to go
@@ -85,8 +107,7 @@ public class LocationWindow extends JFrame {
      */
     private JPanel addPanel(JPanel panel, int gridY, double weight) {
 
-        panel.setBackground(backColour);
-        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        panel.setOpaque(false);
 
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridx = 0;
@@ -106,9 +127,10 @@ public class LocationWindow extends JFrame {
 
         // Make the new textfield object
         JTextField textField = new JTextField(10);
-
+        textField.setFont(new Font(textField.getFont().getName(), Font.BOLD, textField.getFont().getSize()));
+        textField.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         // Same colour as main background
-        textField.setBackground(backColour);
+        textField.setBackground(new Color(186, 215, 240));
 
         // Add a listener for when a character is typed or removed in the textfield
         textField.getDocument().addDocumentListener(new DocumentListener() {
@@ -219,8 +241,7 @@ public class LocationWindow extends JFrame {
 
         // Scrollable list so that all results can be found
         JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.setBackground(backColour);
-
+        scrollPane.setOpaque(false);
         mSuggestionsPanel.add(scrollPane);
     }
 
@@ -247,8 +268,6 @@ public class LocationWindow extends JFrame {
 
                 JPanel panel = rr.getPanel();
                 mRecentLocationsPanel.add(panel);
-
-                panel.setBackground(new Color(160, 220, 255));
             }
             setRecentLocations();
         } else {
@@ -258,15 +277,12 @@ public class LocationWindow extends JFrame {
                 mRecentsList.get(i).updateWeather();
                 JPanel panel = mRecentsList.get(i).getPanel();
                 mRecentLocationsPanel.add(panel);
-
-                panel.setBackground(new Color(160, 220, 255));
             }
         }
     }
 
 
     private void incrementFrequency(LocationObject lo) {
-
 
         boolean updated = false;
 
@@ -328,8 +344,12 @@ public class LocationWindow extends JFrame {
 
             label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
-            if (index % 2 == 0) setBackground(new Color(160, 220, 255));
-            else setBackground(new Color(138, 192, 239));
+            if (index % 2 == 0) setBackground(new Color(230, 230, 230, 200));
+            else setBackground(new Color(200, 200, 200, 200));
+
+            if (isSelected) {
+                setBackground(new Color(190, 190, 190, 200));
+            }
 
             try {
                 String cityName = (String) value.getClass().getDeclaredMethod("getCity", null).invoke(value);

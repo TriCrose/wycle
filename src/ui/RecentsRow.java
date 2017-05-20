@@ -5,6 +5,8 @@ import location.LocationObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.Serializable;
 
 /**
@@ -15,7 +17,7 @@ public class RecentsRow implements Serializable {
     //Frequency: The number of times this location has been used recently
     private int mFrequency;
     private String mPlaceName;
-    private int mIcon;
+    private ImageIcon mIcon;
     private double mTemp;
 
     private JPanel mRowPanel;
@@ -47,8 +49,8 @@ public class RecentsRow implements Serializable {
     public void updateWeather() {
 
         WeatherForecast weatherForecast = new WeatherForecast(mLocationObject);
-        mTemp = weatherForecast.getWeather().getmTemp();
-        mIcon = 0;
+        mTemp = weatherForecast.getWeather().getTemp();
+        mIcon = weatherForecast.getWeather().getIcon();
     }
 
 
@@ -85,7 +87,7 @@ public class RecentsRow implements Serializable {
 
         // Make labels with data created on object creation
         JLabel labelPlace = new JLabel(mPlaceName);
-        JLabel labelIcon = new JLabel("" + mIcon);
+        JLabel labelIcon = new JLabel(mIcon);
         JLabel labelTemp = new JLabel(mTemp + " °C");
 
         // Ensure the label text is centered
@@ -98,16 +100,15 @@ public class RecentsRow implements Serializable {
         mRowPanel.add(labelIcon);
         mRowPanel.add(labelTemp);
 
-        // Same colour as main background
-        mRowPanel.setBackground(new Color(138, 192, 239));
+        mRowPanel.setBackground(new Color(255, 255, 255, 100));
+
 
         mRowPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
 
-                System.out.println("mouse event here");
-                System.out.println("change to new screen with this location");
-                System.out.println(mLocationObject.getCity());
+                // change to new screen with this location
+                System.out.println("clicked recent " + this.toString());
             }
 
 

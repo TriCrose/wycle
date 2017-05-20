@@ -39,12 +39,18 @@ public class MainWindow extends JFrame {
         getContentPane().setBackground(backColour);
 
         mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
+        mDayPanel.setBorder(BorderFactory
+                .createCompoundBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory
+                        .createEmptyBorder(5, 10, 5, 10)));
         drawDay();
-        mIconsPanel = addPanel(new JPanel(new GridLayout(1, 2)), 1, 0.1);
+        mIconsPanel = addPanel(new JPanel(new GridLayout(1, 2)), 1, 0.2);
         drawIcons();
-        mRainWindPanel = addPanel(new JPanel(new GridLayout(1, 3)), 2, 0.1);
+        mRainWindPanel = addPanel(new JPanel(new GridLayout(1, 3)), 2, 0.2);
         drawRainWind();
         mDetailedPanel = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
+        mDetailedPanel.setBorder(BorderFactory
+                .createCompoundBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory
+                        .createEmptyBorder(10, 10, 10, 10)));
         drawDetailed();
 
         setVisible(true);
@@ -100,17 +106,21 @@ public class MainWindow extends JFrame {
         if (mDayIndex != 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DATE, mDayIndex);
-            mCurrentDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+            mCurrentDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
         } else {
-            mCurrentDay = "Today";
+            mCurrentDay = "Now";
         }
 
         // Make a new label and style it
         JLabel labelDay = new JLabel(mCurrentDay);
         labelDay.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
         labelDay.setHorizontalAlignment(JLabel.CENTER);
-        mDayPanel.add(labelDay);
+        mDayPanel.add(labelDay, BorderLayout.LINE_START);
 
+        JLabel labelLocation = new JLabel(mWeatherForecast.getLocation());
+        labelLocation.setHorizontalAlignment(JLabel.CENTER);
+        labelLocation.setFont(new Font("Trebucet MS", Font.PLAIN, 20));
+        mDayPanel.add(labelLocation, BorderLayout.CENTER);
         // Button for going to the location screen
         JButton buttonLocation = new JButton();
         mDayPanel.add(buttonLocation, BorderLayout.LINE_END);
@@ -203,13 +213,16 @@ public class MainWindow extends JFrame {
 
             if (i + hour < weatherHour.size()) {
                 DetailedRow dr = new DetailedRow();
-                mDetailedPanel.add(dr.getPanel(weatherHour.get(i + hour)));
-            } else if (i + hour == weatherHour.size() && i != 9) {
+                JPanel panel = dr.getPanel(weatherHour.get(i + hour));
+                alternateColourPanel(panel, i);
+
+                mDetailedPanel.add(panel);
+            } else if (i + hour == weatherHour.size()) {
 
                 tomorrowWeatherHour = mWeatherForecast.getWeather(1);
 
                 JPanel panel = new JPanel(new BorderLayout());
-                panel.setBackground(backColour);
+                alternateColourPanel(panel, i);
 
                 JLabel label = new JLabel("Tomorrow");
                 label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16));
@@ -219,8 +232,20 @@ public class MainWindow extends JFrame {
             } else {
                 DetailedRow dr = new DetailedRow();
                 assert tomorrowWeatherHour != null;
-                mDetailedPanel.add(dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24)));
+                JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24));
+                alternateColourPanel(panel, i);
+                mDetailedPanel.add(panel);
             }
+        }
+    }
+
+
+    private void alternateColourPanel(JPanel panel, int i) {
+
+        if (i % 2 == 0) {
+            panel.setBackground(new Color(240, 240, 240, 100));
+        } else {
+            panel.setBackground(new Color(195, 195, 195, 100));
         }
     }
 }

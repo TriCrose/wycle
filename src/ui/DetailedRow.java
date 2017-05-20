@@ -2,12 +2,8 @@ package ui;
 
 import apixu.WeatherHour;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  * Store method for creating panels for the detailed view on the MainWindow
@@ -46,7 +42,6 @@ public class DetailedRow {
         labeltemp.setHorizontalAlignment(JLabel.CENTER);
         labelwind.setHorizontalAlignment(JLabel.CENTER);
         labelicon.setHorizontalAlignment(JLabel.CENTER);
-
 
         // Add the labels to the panel
         mRowPanel.add(labelTime);

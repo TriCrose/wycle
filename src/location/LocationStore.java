@@ -66,17 +66,15 @@ public class LocationStore {
         // Start with a linear search to return basic results
         ArrayList<LocationObject> results = new ArrayList<>();
 
-        String lowerInput = input.toLowerCase().replaceAll(",\\s+", ",");
+        String lowerInput = input.toLowerCase().replaceAll(",\\s+", " ");
         ArrayList<LocationIndexPair> cityIndices = new ArrayList<>();
 
         // for each city which contains the given string, put it with the index of the substring in the map
         for (LocationObject city : cities) {
 
-            String searchString = (city.getCity() + "," + city.getCountry()).toLowerCase();
+            String searchString = (city.getCity() + " " + city.getCountry()).toLowerCase();
 
             int substringIndex = searchString.indexOf(lowerInput);
-
-//            int substringIndex = city.getCity().toLowerCase().indexOf(lowerInput);
 
             if (substringIndex != -1) {
                 cityIndices.add(new LocationIndexPair(city, substringIndex));
