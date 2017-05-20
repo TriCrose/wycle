@@ -155,9 +155,9 @@ public class MainWindow extends JFrame {
 
             WeatherHour currentWeather = mWeatherForecast.getWeather();
 
-            rain = currentWeather.getmRain();
-            temp = currentWeather.getmTemp();
-            wind = currentWeather.getmWind();
+            rain = currentWeather.getRain();
+            temp = currentWeather.getTemp();
+            wind = currentWeather.getWind();
         } else {
             WeatherDay currentWeather = mWeatherForecast.getDaySummary(mDayIndex);
 

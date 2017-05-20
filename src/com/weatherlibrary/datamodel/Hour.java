@@ -82,6 +82,9 @@ public class Hour implements Serializable{
 	
 	@SerializedName("condition")
 	Condition condition = new Condition();
+
+    @SerializedName("is_day")
+    public int is_day;
 	
     public int getTimeEpoch()
     {
@@ -306,6 +309,13 @@ public class Hour implements Serializable{
     public void setWillItSnow(int mWillItSnow)
     {
     	this.will_it_snow = mWillItSnow;
+    }
+
+    public int getIsDay() {
+        return is_day;
+    }
+    public void setIsDay(int mIsDay) {
+        this.is_day = mIsDay;
     }
     
 }

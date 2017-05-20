@@ -32,7 +32,7 @@ public class RecentsRow {
 
         WeatherForecast weatherForecast = new WeatherForecast(lo);
 
-        mTemp = weatherForecast.getWeather().getmTemp();
+        mTemp = weatherForecast.getWeather().getTemp();
     }
 
 
