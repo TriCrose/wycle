@@ -48,13 +48,16 @@ public class WeatherHour {
             else if (cond.getText().contains("Sunny") || cond.getText().contains("Clear")) {
                 filepath += "sunny.png";
             }
-            else if ((cond.getText().contains("Cloudy")
+            else if (( cond.getText().contains("Cloudy")
                     || cond.getText().contains("Overcast"))
                     || cond.getText().contains("cloudy")
                     || cond.getText().contains("Mist")) {
                 filepath += "cloudy.png";
             }
             ImageIcon icon = new ImageIcon(filepath);
+            Image image = icon.getImage(); // transform it
+            Image newimg = image.getScaledInstance(50, 50,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+            icon = new ImageIcon(newimg);  // transform it back
             this.mIcon = icon;
         } catch (Exception e) {
             e.printStackTrace();

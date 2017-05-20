@@ -70,7 +70,6 @@ public class WeatherForecast {
             double temp = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getTempC();
             double rain = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getPrecipMm();
             Condition cond = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getCondition();
-            System.out.println(cond.getText());
             int isDay = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getIsDay();
             WeatherHour wHour = new WeatherHour(time, temp, wind, rain, cond, isDay);
             table.add(wHour);
