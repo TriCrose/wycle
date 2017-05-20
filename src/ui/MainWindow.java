@@ -4,9 +4,11 @@ import apixu.WeatherDay;
 import apixu.WeatherForecast;
 import apixu.WeatherHour;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -31,6 +33,9 @@ public class MainWindow extends JFrame {
     public MainWindow() {
 
         super("Wycle");
+
+        setBackgroundImage();
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         setSize(AppParams.WIDTH, AppParams.HEIGHT);
@@ -39,18 +44,15 @@ public class MainWindow extends JFrame {
         getContentPane().setBackground(backColour);
 
         mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
-        mDayPanel.setBorder(BorderFactory
-                .createCompoundBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory
-                        .createEmptyBorder(5, 10, 5, 10)));
+        mDayPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         drawDay();
         mIconsPanel = addPanel(new JPanel(new GridLayout(1, 2)), 1, 0.2);
         drawIcons();
         mRainWindPanel = addPanel(new JPanel(new GridLayout(1, 3)), 2, 0.2);
+        mRainWindPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         drawRainWind();
         mDetailedPanel = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
-        mDetailedPanel.setBorder(BorderFactory
-                .createCompoundBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory
-                        .createEmptyBorder(10, 10, 10, 10)));
+        mDetailedPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         drawDetailed();
 
         setVisible(true);
@@ -68,7 +70,6 @@ public class MainWindow extends JFrame {
         return mWeatherForecast;
     }
 
-
     public void setmDayIndex(int mDayIndex) {
 
         this.mDayIndex = mDayIndex;
@@ -83,8 +84,7 @@ public class MainWindow extends JFrame {
      */
     private JPanel addPanel(JPanel panel, int gridY, double weight) {
 
-        panel.setBackground(backColour);
-        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        panel.setOpaque(false);
 
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridx = 0;
@@ -113,13 +113,13 @@ public class MainWindow extends JFrame {
 
         // Make a new label and style it
         JLabel labelDay = new JLabel(mCurrentDay);
-        labelDay.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+        labelDay.setFont(new Font(labelDay.getFont().getName(), Font.PLAIN, 24));
         labelDay.setHorizontalAlignment(JLabel.CENTER);
         mDayPanel.add(labelDay, BorderLayout.LINE_START);
 
         JLabel labelLocation = new JLabel(mWeatherForecast.getLocation());
         labelLocation.setHorizontalAlignment(JLabel.CENTER);
-        labelLocation.setFont(new Font("Trebucet MS", Font.PLAIN, 20));
+        labelLocation.setFont(new Font(labelLocation.getFont().getName(), Font.PLAIN, 20));
         mDayPanel.add(labelLocation, BorderLayout.CENTER);
         // Button for going to the location screen
         JButton buttonLocation = new JButton();
@@ -137,9 +137,16 @@ public class MainWindow extends JFrame {
      */
     private void drawIcons() {
 
+        WeatherHour weatherForecast = new WeatherForecast().getWeather();
+
+        ImageIcon icon = weatherForecast.getIcon();
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+
         // Set up the labels
         JLabel labelBikeCoefficient = new JLabel("bike coefficient");
-        JLabel labelWeatherIcon = new JLabel("weather icon");
+        JLabel labelWeatherIcon = new JLabel(icon);
 
         // Center them
         labelBikeCoefficient.setHorizontalAlignment(JLabel.CENTER);
@@ -246,6 +253,25 @@ public class MainWindow extends JFrame {
             panel.setBackground(new Color(240, 240, 240, 100));
         } else {
             panel.setBackground(new Color(195, 195, 195, 100));
+        }
+    }
+
+
+    private void setBackgroundImage() {
+
+        WeatherForecast weatherForecast = new WeatherForecast();
+        boolean isDay = weatherForecast.getWeather().getIsDay() == 1;
+
+        String path = "art/use_these/backgrounds/";
+        if (isDay) path += "background_day[bg].png";
+        else path += "background_night[bg].png";
+
+        try {
+            Image backgroundImage = ImageIO.read(new File(path));
+            JLabel background = new JLabel(new ImageIcon(backgroundImage));
+            this.setContentPane(background);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
