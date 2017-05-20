@@ -116,8 +116,11 @@ public class WeekWindow extends JFrame {
             temp = mWeatherForecast.getWeather().getTemp();
         }
 
+        ImageIcon icon = mWeatherForecast.getDaySummary(dayIndex).getIcon();
+
+        //TODO maybe show min/max temp for each day?
         JLabel labelTemp = new JLabel(temp + " °C");
-        JLabel labelIcon = new JLabel("icon");
+        JLabel labelIcon = new JLabel(icon);
 
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
         labelIcon.setHorizontalAlignment(JLabel.CENTER);
