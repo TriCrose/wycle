@@ -142,7 +142,7 @@ public class MainWindow extends JFrame {
         ImageIcon icon = weatherForecast.getIcon(100, 100);
 
         // Set up the labels
-        JLabel labelBikeCoefficient = new JLabel("bike coefficient");
+        JLabel labelBikeCoefficient = getCyclingCoefficient();
         JLabel labelWeatherIcon = new JLabel(icon);
 
         // Center them
@@ -270,5 +270,49 @@ public class MainWindow extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private JLabel getCyclingCoefficient() {
+        //all weather data referenced in README
+        double wind = mWeatherForecast.getWeather().getWind();
+        double temp = mWeatherForecast.getWeather().getTemp();
+        double rain = mWeatherForecast.getWeather().getRain();
+        //standardized temperature, subtracting the mean of 12 and measuring increments per 2.5 degrees
+        temp = (temp - 15)/2.5;
+        //standardized wind, subtracting the mean of 9 and measuring increments per 5mph
+        wind = (wind - 9)/5;
+        if (wind < 0) wind = 0;
+        //units of rain are fairly small, so scale them up to match
+        rain = rain * 5;
+
+        //calculate coefficient
+        double coeff = 1 + temp*0.1 - (Math.pow(wind,2))*0.075 - rain*0.15;
+        if (coeff > 1) coeff = 1;
+        if (coeff < 0) coeff = 0;
+
+        //different output depending on certain ranges
+        String description;
+        if (coeff < 0.25) {
+            description = "Awful";
+        } else if (coeff < 0.50) {
+            description = "Poor";
+        } else if (coeff < 0.75) {
+            description = "Okay";
+        } else {
+            description = "Good";
+        }
+
+        //for testing purposes
+        System.out.println(coeff);
+
+        //coeff of 0 gives bright red, 0.5 gives yellow, and 1.0 gives bright green
+        Color coeffColor = Color.getHSBColor((float)(coeff*0.4), (float)0.9, (float)0.9);
+
+        //create, colour, and format label
+        JLabel ccLabel = new JLabel(description);
+        ccLabel.setForeground(coeffColor);
+        ccLabel.setFont(new Font(ccLabel.getFont().getName(), Font.BOLD, 30));
+
+        return ccLabel;
     }
 }
