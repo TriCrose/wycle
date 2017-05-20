@@ -1,5 +1,8 @@
 package apixu;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class WeatherDay {
 
     //Current day of the week, expressed in full
@@ -20,6 +23,9 @@ public class WeatherDay {
     //Total rainfall in millimetres
     private double mTotalRain;
 
+    //Average weather icon
+    private ImageIcon mIcon;
+
     //getters and setters for all members
 
     public WeatherDay(String day, double wind, double avgT, double maxT, double minT, double rain) {
@@ -29,6 +35,12 @@ public class WeatherDay {
         this.mMaxTemp = maxT;
         this.mMinTemp = minT;
         this.mTotalRain = rain;
+        //TODO choose image based on day weather
+        ImageIcon icon = new ImageIcon("art/use_these/weather_icons/day/cloudysunny.png"); //convert png to ImageIcon
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+        this.mIcon = icon;
     }
 
     public String getDay() {
@@ -53,5 +65,9 @@ public class WeatherDay {
 
     public double getTotalRain() {
         return mTotalRain;
+    }
+
+    public ImageIcon getIcon() {
+        return mIcon;
     }
 }

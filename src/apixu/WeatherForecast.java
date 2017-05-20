@@ -14,7 +14,7 @@ import java.util.Calendar;
 public class WeatherForecast {
 
     //Our personal API key for making requests
-    private String key = "eb2a0633229b456ba6093557151106";
+    private String key = "bdc5142f54be4c62b03132022171605";
 
     //Weather model contains current and forecasted weather for a given location
     private WeatherModel mWeatherModel;
