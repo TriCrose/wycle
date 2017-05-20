@@ -113,7 +113,7 @@ public class WeekWindow extends JFrame {
         if (dayIndex != 0) {
             temp = mWeatherForecast.getDaySummary(dayIndex).getAvgTemp();
         } else {
-            temp = mWeatherForecast.getWeather().getmTemp();
+            temp = mWeatherForecast.getWeather().getTemp();
         }
 
         JLabel labelTemp = new JLabel(temp + " °C");

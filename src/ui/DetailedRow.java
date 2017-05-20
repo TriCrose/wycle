@@ -2,8 +2,12 @@ package ui;
 
 import apixu.WeatherHour;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Store method for creating panels for the detailed view on the MainWindow
@@ -29,11 +33,12 @@ public class DetailedRow {
         mRowPanel = new JPanel(new GridLayout(1, 0));
 
         // Set the labels with the relevant weather data
-        JLabel labelTime = new JLabel(weatherHour.getmTime());
-        JLabel labelrain = new JLabel(weatherHour.getmRain() + " mm");
-        JLabel labeltemp = new JLabel(weatherHour.getmTemp() + " °C");
-        JLabel labelwind = new JLabel(weatherHour.getmWind() + " mph");
-        JLabel labelicon = new JLabel(weatherHour.getmCondition().getIcon());
+        JLabel labelTime = new JLabel(weatherHour.getTime());
+        JLabel labelrain = new JLabel(weatherHour.getRain() + " mm");
+        JLabel labeltemp = new JLabel(weatherHour.getTemp() + " °C");
+        JLabel labelwind = new JLabel(weatherHour.getWind() + " mph");
+        //TODO resize icons
+        JLabel labelicon = new JLabel(weatherHour.getIcon());
 
         // Set the text to be centered
         labelTime.setHorizontalAlignment(JLabel.CENTER);
@@ -41,6 +46,7 @@ public class DetailedRow {
         labeltemp.setHorizontalAlignment(JLabel.CENTER);
         labelwind.setHorizontalAlignment(JLabel.CENTER);
         labelicon.setHorizontalAlignment(JLabel.CENTER);
+
 
         // Add the labels to the panel
         mRowPanel.add(labelTime);

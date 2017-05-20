@@ -55,8 +55,11 @@ public class Current implements Serializable{
 	
 	@SerializedName("feelslike_f")
 	public double feelslike_f;
-	
-	
+
+    @SerializedName("is_day")
+    public int is_day;
+
+    @SerializedName("condition")
 	Condition mCondition = new Condition();
 
      public int getLastUpdateEpoch()
@@ -210,6 +213,13 @@ public class Current implements Serializable{
      public void setFeelslikeF(double mFeelslikeF)
      {
      	this.feelslike_f = mFeelslikeF;
+     }
+
+     public int getIsDay() {
+         return is_day;
+     }
+     public void setIsDay(int mIsDay) {
+         this.is_day = mIsDay;
      }
      
 }

@@ -63,14 +63,16 @@ public class WeatherForecast {
     public ArrayList<WeatherHour> getWeather(int day) {
         ArrayList<WeatherHour> table = new ArrayList<>();
         for (int i = 0; i<24; i++) {
-            String time = "";
-            if (i < 10) time = "0";
-            time += Integer.toString(i) + ":00";
+            String time = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getTime();
+            //getTime returns yyyy-mm-dd hh:mm format, so take last 5 characters
+            time = time.substring(time.length() - 5);
             double wind = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getWindMph();
             double temp = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getTempC();
             double rain = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getPrecipMm();
             Condition cond = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getCondition();
-            WeatherHour wHour = new WeatherHour(time, temp, wind, rain, cond);
+            System.out.println(cond.getText());
+            int isDay = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getIsDay();
+            WeatherHour wHour = new WeatherHour(time, temp, wind, rain, cond, isDay);
             table.add(wHour);
         }
 
@@ -89,7 +91,8 @@ public class WeatherForecast {
         double rain = mWeatherModel.current.getPrecipMm();
         double temp = mWeatherModel.current.getTempC();
         double wind = mWeatherModel.current.getWindMph();
-        return new WeatherHour(null, temp, wind, rain, cond);
+        int isDay = mWeatherModel.current.getIsDay();
+        return new WeatherHour("now", temp, wind, rain, cond, isDay);
     }
 
     /**
@@ -120,7 +123,6 @@ public class WeatherForecast {
      * @return String containing the location used by the current model
      */
     public String getLocation() {
-
         return mWeatherModel.getLocation().getName();
     }
 
