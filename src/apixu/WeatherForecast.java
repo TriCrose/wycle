@@ -112,7 +112,10 @@ public class WeatherForecast {
         double minT = mWeatherModel.forecast.forecastday.get(day).getDay().mintemp_c;
         double wind = mWeatherModel.forecast.forecastday.get(day).getDay().maxwind_mph;
         double rain = mWeatherModel.forecast.forecastday.get(day).getDay().totalprecip_mm;
-        return new WeatherDay(dayName, wind, avgT, maxT, minT, rain);
+
+        Condition cond = mWeatherModel.forecast.forecastday.get(day).getHour().get(12).getCondition();
+
+        return new WeatherDay(dayName, wind, avgT, maxT, minT, rain, cond);
     }
 
 

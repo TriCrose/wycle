@@ -1,20 +1,24 @@
 package ui;
 
+import apixu.WeatherDay;
 import apixu.WeatherForecast;
+import apixu.WeatherHour;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class WeekWindow extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private static final Color backColour = new Color(138, 192, 239);
     private static GridBagConstraints constraints = new GridBagConstraints();
-    WeatherForecast mWeatherForecast;
+    private WeatherForecast mWeatherForecast;
     private JPanel mHeaderPanel;
     private JPanel mDayIconsPanel;
 
@@ -22,19 +26,22 @@ public class WeekWindow extends JFrame {
     public WeekWindow() {
 
         super("Wycle");
+
+        setBackgroundImage();
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         setSize(AppParams.WIDTH, AppParams.HEIGHT);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
-        getContentPane().setBackground(backColour);
 
         mWeatherForecast = MainWindow.getmWeatherForecast();
 
         mHeaderPanel = addPanel_Header(0, 0.04);
         JLabel labelLoc = new JLabel(mWeatherForecast.getLocation());
-        labelLoc.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+        labelLoc.setFont(new Font(labelLoc.getFont().getName(), Font.PLAIN, 24));
         labelLoc.setHorizontalAlignment(JLabel.CENTER);
+
         mHeaderPanel.add(labelLoc);
 
         mDayIconsPanel = addPanel_DayIcons(1, 1.0);
@@ -51,32 +58,6 @@ public class WeekWindow extends JFrame {
     public static void main(String args[]) {
 
         new WeekWindow();
-    }
-
-
-    // this just for testing, because the days will have to be chosen dynamically
-    private String dayName(int day) {
-
-        switch (day) {
-            case 0:
-                return "NOW";
-            case 1:
-                return "MON";
-            case 2:
-                return "TUE";
-            case 3:
-                return "WED";
-            case 4:
-                return "THU";
-            case 5:
-                return "FRI";
-            case 6:
-                return "SAT";
-            case 7:
-                return "SUN";
-            default:
-                return "OOPS";
-        }
     }
 
 
@@ -100,7 +81,30 @@ public class WeekWindow extends JFrame {
         }
 
         JPanel panel = new JPanel(new GridLayout(0, 1));
-        panel.setBackground(new Color(160, 220, 255));
+        panel.setBackground(new Color(255, 255, 255, 100));
+
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+                // change to new screen with this location
+                System.out.println("clicked recent " + this.toString());
+            }
+
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+                panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+                panel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
 
         JLabel labelDay = new JLabel(currentDay);
         labelDay.setFont(new Font(labelDay.getFont().getName(), Font.BOLD, 14));
@@ -109,14 +113,17 @@ public class WeekWindow extends JFrame {
         labelDay.setHorizontalAlignment(JLabel.CENTER);
 
         double temp;
-
+        ImageIcon icon;
         if (dayIndex != 0) {
-            temp = mWeatherForecast.getDaySummary(dayIndex).getAvgTemp();
+            WeatherDay day = mWeatherForecast.getDaySummary(dayIndex);
+            temp = day.getAvgTemp();
+            icon = day.getIcon(100, 100);
         } else {
-            temp = mWeatherForecast.getWeather().getTemp();
+            WeatherHour hour = mWeatherForecast.getWeather();
+            temp = hour.getTemp();
+            icon = hour.getIcon(100, 100);
         }
 
-        ImageIcon icon = mWeatherForecast.getDaySummary(dayIndex).getIcon();
 
         //TODO maybe show min/max temp for each day?
         JLabel labelTemp = new JLabel(temp + " °C");
@@ -128,8 +135,6 @@ public class WeekWindow extends JFrame {
         panel.add(labelTemp);
         panel.add(labelIcon);
 
-        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-
         return panel;
     }
 
@@ -137,8 +142,7 @@ public class WeekWindow extends JFrame {
     private JPanel addPanel_Header(int gridY, double weight) {
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(backColour);
-        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        panel.setOpaque(false);
 
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridx = 0;
@@ -156,11 +160,8 @@ public class WeekWindow extends JFrame {
         int spacing = 10;
 
         JPanel panel = new JPanel(new GridLayout(2, 3, spacing, spacing));
-        panel.setBackground(backColour);
-        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        panel.setBorder(BorderFactory
-                .createCompoundBorder(new EtchedBorder(EtchedBorder.LOWERED), new EmptyBorder(spacing, spacing,
-                        spacing, spacing)));
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(spacing, spacing, spacing, spacing));
 
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridx = 0;
@@ -170,5 +171,24 @@ public class WeekWindow extends JFrame {
 
         add(panel, constraints);
         return panel;
+    }
+
+
+    private void setBackgroundImage() {
+
+        WeatherForecast weatherForecast = new WeatherForecast();
+        boolean isDay = weatherForecast.getWeather().getIsDay() == 1;
+
+        String path = "art/use_these/backgrounds/";
+        if (isDay) path += "background_day[bg].png";
+        else path += "background_night[bg].png";
+
+        try {
+            Image backgroundImage = ImageIO.read(new File(path));
+            JLabel background = new JLabel(new ImageIcon(backgroundImage));
+            this.setContentPane(background);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

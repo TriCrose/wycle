@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -205,9 +206,7 @@ public class LocationWindow extends JFrame {
         // Make a new list from the model above
         JList<LocationObject> list = new JList<>(mSuggestionListModel);
         list.setCellRenderer(new CustomListCellRenderer());
-
-        // Styling background
-        list.setBackground(backColour);
+        list.setOpaque(false);
 
         // Can only click on one item at a time
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -241,7 +240,32 @@ public class LocationWindow extends JFrame {
 
         // Scrollable list so that all results can be found
         JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+
+        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+
+                JButton button = super.createDecreaseButton(orientation);
+
+                button.setBorder(BorderFactory.createEmptyBorder());
+
+                return button;
+            }
+
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+
+                JButton button = super.createIncreaseButton(orientation);
+
+                button.setBorder(BorderFactory.createEmptyBorder());
+
+                return button;
+            }
+        });
         mSuggestionsPanel.add(scrollPane);
     }
 

@@ -41,7 +41,6 @@ public class MainWindow extends JFrame {
         setSize(AppParams.WIDTH, AppParams.HEIGHT);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
-        getContentPane().setBackground(backColour);
 
         mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
         mDayPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -123,6 +122,7 @@ public class MainWindow extends JFrame {
         mDayPanel.add(labelLocation, BorderLayout.CENTER);
         // Button for going to the location screen
         JButton buttonLocation = new JButton();
+        buttonLocation.setBackground(new Color(255, 0, 0));
         mDayPanel.add(buttonLocation, BorderLayout.LINE_END);
 
         buttonLocation.addActionListener(e -> {
@@ -139,10 +139,7 @@ public class MainWindow extends JFrame {
 
         WeatherHour weatherForecast = new WeatherForecast().getWeather();
 
-        ImageIcon icon = weatherForecast.getIcon();
-        Image image = icon.getImage(); // transform it
-        Image newimg = image.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        icon = new ImageIcon(newimg);  // transform it back
+        ImageIcon icon = weatherForecast.getIcon(100, 100);
 
         // Set up the labels
         JLabel labelBikeCoefficient = new JLabel("bike coefficient");
@@ -250,7 +247,7 @@ public class MainWindow extends JFrame {
     private void alternateColourPanel(JPanel panel, int i) {
 
         if (i % 2 == 0) {
-            panel.setBackground(new Color(240, 240, 240, 100));
+            panel.setBackground(new Color(255, 255, 255, 100));
         } else {
             panel.setBackground(new Color(195, 195, 195, 100));
         }

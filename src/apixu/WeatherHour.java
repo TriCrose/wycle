@@ -2,11 +2,8 @@ package apixu;
 
 import com.weatherlibrary.datamodel.Condition;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 
 public class WeatherHour {
 
@@ -33,32 +30,10 @@ public class WeatherHour {
 
     //getters and setters for all members
 
+
     public WeatherHour(String time, double temp, double wind, double rain, Condition cond, int isDay) {
-        //begin constructing filepath for icon
-        String filepath = "art/use_these/weather_icons/";
-        //access day folder or night folder depending on isDay
-        if (isDay == 1) {
-            filepath += "day/";
-        } else {
-            filepath += "night/night_";
-        }
-        //search the condition text for key words to select the icon
-        if (cond.getText().contains("rain")) {
-            filepath += "rainy.png";
-        } else if (cond.getText().contains("Sunny") || cond.getText().contains("Clear")) {
-            filepath += "sunny.png";
-        } else if ((cond.getText().contains("Cloudy")
-                || cond.getText().contains("Overcast"))
-                || cond.getText().contains("cloudy")
-                || cond.getText().contains("Mist")) {
-            filepath += "cloudy.png";
-        }
-        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
-        Image image = icon.getImage(); // transform it
-        Image newimg = image.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        icon = new ImageIcon(newimg);  // transform it back
+
         this.mCondition = cond;
-        this.mIcon = icon;
         this.mTime = time;
         this.mWind = wind;
         this.mRain = rain;
@@ -66,32 +41,73 @@ public class WeatherHour {
         this.mIsDay = isDay;
     }
 
+
     public String getTime() {
+
         return mTime;
     }
 
+
     public double getTemp() {
+
         return mTemp;
     }
 
+
     public double getWind() {
+
         return mWind;
     }
 
+
     public double getRain() {
+
         return mRain;
     }
 
+
     public Condition getCondition() {
+
         return mCondition;
     }
 
+
     public int getIsDay() {
+
         return mIsDay;
     }
 
-    public ImageIcon getIcon() {
+
+    public ImageIcon getIcon(int width, int height) {
+        //begin constructing filepath for icon
+        String filepath = "art/use_these/weather_icons/";
+        //access day folder or night folder depending on isDay
+        if (mIsDay == 1) {
+            filepath += "day/";
+        } else {
+            filepath += "night/night_";
+        }
+        //search the condition text for key words to select the icon
+        if (mCondition.getText().contains("rain")) {
+            filepath += "rainy.png";
+        } else if (mCondition.getText().contains("Sunny") || mCondition.getText().contains("Clear")) {
+            filepath += "sunny.png";
+        } else if ((mCondition.getText().contains("Cloudy") || mCondition.getText().contains("Overcast")) || mCondition
+                .getText().contains("cloudy") || mCondition.getText().contains("Mist")) {
+            filepath += "cloudy.png";
+        }
+        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+        this.mIcon = icon;
         return mIcon;
+    }
+
+
+    public ImageIcon getIcon() {
+
+        return getIcon(50, 50);
     }
 }
 
