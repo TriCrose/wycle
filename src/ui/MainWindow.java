@@ -69,6 +69,30 @@ public class MainWindow extends JFrame {
         return mWeatherForecast;
     }
 
+
+    public static ImageIcon getWindIcon(double wind, int width, int height) {
+
+        //begin constructing filepath for icon
+        String filepath = "art/use_these/wind_icons/";
+        //access appropriate bike icon depending on given coefficient
+        if (wind < 1) {
+            filepath += "wind0.png";
+        } else if (wind < 6) {
+            filepath += "wind1.png";
+        } else if (wind < 11) {
+            filepath += "wind2.png";
+        } else {
+            filepath += "wind3.png";
+        }
+
+        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+        return icon;
+    }
+
+
     public void setmDayIndex(int mDayIndex) {
 
         this.mDayIndex = mDayIndex;
@@ -184,7 +208,7 @@ public class MainWindow extends JFrame {
         // Make the labels
         JLabel labelRain = new JLabel(rain + " mm");
         JLabel labelTemp = new JLabel(temp + " °C");
-        JLabel labelWind = new JLabel(wind + " mph");
+        JLabel labelWind = new JLabel(getWindIcon(wind, 85, 50));
 
         // Style the labels
         labelRain.setHorizontalAlignment(JLabel.CENTER);
@@ -221,7 +245,7 @@ public class MainWindow extends JFrame {
                 alternateColourPanel(panel, i);
 
                 mDetailedPanel.add(panel);
-            } else if (i + hour == weatherHour.size()) {
+            } else if (i + hour == weatherHour.size() && i != 9) {
 
                 tomorrowWeatherHour = mWeatherForecast.getWeather(1);
 
@@ -233,7 +257,7 @@ public class MainWindow extends JFrame {
                 label.setHorizontalAlignment(JLabel.CENTER);
                 panel.add(label);
                 mDetailedPanel.add(panel);
-            } else {
+            } else if (i + hour > weatherHour.size()) {
                 DetailedRow dr = new DetailedRow();
                 assert tomorrowWeatherHour != null;
                 JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24));
@@ -271,35 +295,24 @@ public class MainWindow extends JFrame {
         }
     }
 
+
     private JLabel getCyclingCoefficient() {
         //all weather data referenced in README
         double wind = mWeatherForecast.getWeather().getWind();
         double temp = mWeatherForecast.getWeather().getTemp();
         double rain = mWeatherForecast.getWeather().getRain();
         //standardized temperature, subtracting the mean of 12 and measuring increments per 2.5 degrees
-        temp = (temp - 15)/2.5;
+        temp = (temp - 15) / 2.5;
         //standardized wind, subtracting the mean of 9 and measuring increments per 5mph
-        wind = (wind - 9)/5;
+        wind = (wind - 9) / 5;
         if (wind < 0) wind = 0;
         //units of rain are fairly small, so scale them up to match
         rain = rain * 5;
 
         //calculate coefficient
-        double coeff = 1 + temp*0.1 - (Math.pow(wind,2))*0.075 - rain*0.15;
+        double coeff = 1 + temp * 0.1 - (Math.pow(wind, 2)) * 0.075 - rain * 0.15;
         if (coeff > 1) coeff = 1;
         if (coeff < 0) coeff = 0;
-
-        //different output depending on certain ranges
-//        String description;
-//        if (coeff < 0.25) {
-//            description = "Awful";
-//        } else if (coeff < 0.50) {
-//            description = "Poor";
-//        } else if (coeff < 0.75) {
-//            description = "Okay";
-//        } else {
-//            description = "Good";
-//        }
 
         //get the icon for the current coefficient
         ImageIcon icon = getCyclingCoefficientIcon(coeff);
@@ -307,15 +320,7 @@ public class MainWindow extends JFrame {
         //for testing purposes
         System.out.println(coeff);
 
-        //coeff of 0 gives bright red, 0.5 gives yellow, and 1.0 gives bright green
-//        Color coeffColor = Color.getHSBColor((float)(coeff*0.4), (float)0.9, (float)0.9);
-
-        //create, colour, and format label
-        JLabel ccLabel = new JLabel(icon);
-//        ccLabel.setForeground(coeffColor);
-//        ccLabel.setFont(new Font(ccLabel.getFont().getName(), Font.BOLD, 30));
-
-        return ccLabel;
+        return new JLabel(icon);
     }
 
 
