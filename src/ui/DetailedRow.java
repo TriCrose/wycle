@@ -24,7 +24,7 @@ public class DetailedRow {
      * @param weatherHour the current weather data for this certain panel to use
      * @return panel with weather data and time added
      */
-    public JPanel getPanel(WeatherHour weatherHour) {
+    public JPanel getPanel(WeatherHour weatherHour, Color fontColor) {
 
         mRowPanel = new JPanel(new GridLayout(1, 0));
 
@@ -41,6 +41,14 @@ public class DetailedRow {
         labeltemp.setHorizontalAlignment(JLabel.CENTER);
         labelwind.setHorizontalAlignment(JLabel.CENTER);
         labelicon.setHorizontalAlignment(JLabel.CENTER);
+
+        // Set the font colour
+        labelTime.setForeground(fontColor);
+        labelrain.setForeground(fontColor);
+        labeltemp.setForeground(fontColor);
+        labelwind.setForeground(fontColor);
+        labelicon.setForeground(fontColor);
+
 
         // Add the labels to the panel
         mRowPanel.add(labelTime);

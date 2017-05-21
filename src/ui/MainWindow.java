@@ -28,6 +28,7 @@ public class MainWindow extends JFrame {
     private JPanel mDetailedPanel;
     private int mDayIndex = 0; // change when switching days
     private String mCurrentDay;
+    private Color fontColor;
 
 
     public MainWindow() {
@@ -41,6 +42,13 @@ public class MainWindow extends JFrame {
         setSize(AppParams.WIDTH, AppParams.HEIGHT);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
+
+        // Set font colour depending on day or night
+        if (mWeatherForecast.getWeather().getIsDay() == 1) {
+            fontColor = Color.black;
+        } else {
+            fontColor = Color.white;
+        }
 
         mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
         mDayPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -138,11 +146,13 @@ public class MainWindow extends JFrame {
         JLabel labelDay = new JLabel(mCurrentDay);
         labelDay.setFont(new Font(labelDay.getFont().getName(), Font.PLAIN, 24));
         labelDay.setHorizontalAlignment(JLabel.CENTER);
+        labelDay.setForeground(fontColor);
         mDayPanel.add(labelDay, BorderLayout.LINE_START);
 
         JLabel labelLocation = new JLabel(mWeatherForecast.getLocation());
         labelLocation.setHorizontalAlignment(JLabel.CENTER);
         labelLocation.setFont(new Font(labelLocation.getFont().getName(), Font.PLAIN, 24));
+        labelLocation.setForeground(fontColor);
         mDayPanel.add(labelLocation, BorderLayout.CENTER);
         // Button for going to the location screen
         JButton buttonLocation = new JButton(getCompassIcon());
@@ -217,11 +227,13 @@ public class MainWindow extends JFrame {
         // Style the labels
         labelRain.setHorizontalAlignment(JLabel.CENTER);
         labelRain.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
+        labelRain.setForeground(fontColor);
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
         labelTemp.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
+        labelTemp.setForeground(fontColor);
         labelWind.setHorizontalAlignment(JLabel.CENTER);
         labelWind.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
-
+        labelWind.setForeground(fontColor);
         // Add the labels
         mRainWindPanel.add(labelRain);
         mRainWindPanel.add(labelTemp);
@@ -245,7 +257,7 @@ public class MainWindow extends JFrame {
 
             if (i + hour < weatherHour.size()) {
                 DetailedRow dr = new DetailedRow();
-                JPanel panel = dr.getPanel(weatherHour.get(i + hour));
+                JPanel panel = dr.getPanel(weatherHour.get(i + hour), fontColor);
                 alternateColourPanel(panel, i);
 
                 mDetailedPanel.add(panel);
@@ -259,12 +271,13 @@ public class MainWindow extends JFrame {
                 JLabel label = new JLabel("Tomorrow");
                 label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16));
                 label.setHorizontalAlignment(JLabel.CENTER);
+                label.setForeground(fontColor);
                 panel.add(label);
                 mDetailedPanel.add(panel);
             } else if (i + hour > weatherHour.size()) {
                 DetailedRow dr = new DetailedRow();
                 assert tomorrowWeatherHour != null;
-                JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24));
+                JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24), fontColor);
                 alternateColourPanel(panel, i);
                 mDetailedPanel.add(panel);
             }
