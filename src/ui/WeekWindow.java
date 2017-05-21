@@ -99,20 +99,19 @@ public class WeekWindow extends JFrame {
 
         labelDay.setHorizontalAlignment(JLabel.CENTER);
 
-        double temp;
+        String temp;
         ImageIcon icon;
         if (dayIndex != 0) {
             WeatherDay day = mWeatherForecast.getDaySummary(dayIndex);
-            temp = day.getAvgTemp();
+            temp = Integer.toString((int)day.getMaxTemp()) + "°C     " + Integer.toString((int)day.getMinTemp()) + "°C";
             icon = day.getIcon(100, 100);
         } else {
             WeatherHour hour = mWeatherForecast.getWeather();
-            temp = hour.getTemp();
+            temp = Double.toString(hour.getTemp()) + "°C";
             icon = hour.getIcon(100, 100);
         }
 
-        //TODO maybe show min/max temp for each day?
-        JLabel labelTemp = new JLabel(temp + " °C");
+        JLabel labelTemp = new JLabel(temp);
         JLabel labelIcon = new JLabel(icon);
 
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
