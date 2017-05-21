@@ -129,34 +129,38 @@ public class LocationWindow extends JFrame {
      */
     private void drawSearchBar() {
 
+        Color searchBarBackground = new Color(186, 215, 240);
+
+        ImageIcon icon = new ImageIcon("art/use_these/other_icons/magnifying_glass.png"); //convert png to ImageIcon
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(30, 30, Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+
+        JLabel searchIcon = new JLabel(icon);
+        searchIcon.setOpaque(true);
+        searchIcon.setBackground(searchBarBackground);
+
+        mSearchBarPanel.add(searchIcon, BorderLayout.LINE_START);
+
         // Make the new textfield object
         JTextField textField = new JTextField(10);
         textField.setFont(new Font(textField.getFont().getName(), Font.BOLD, textField.getFont().getSize()));
-        textField.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        textField.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
         // Same colour as main background
-        textField.setBackground(new Color(186, 215, 240));
+        textField.setBackground(searchBarBackground);
 
         // Add a listener for when a character is typed or removed in the textfield
         textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
-
-                onUpdate();
-            }
+            public void insertUpdate(DocumentEvent e) {onUpdate();}
 
 
             @Override
-            public void removeUpdate(DocumentEvent e) {
-
-                onUpdate();
-            }
+            public void removeUpdate(DocumentEvent e) {onUpdate();}
 
 
             @Override
-            public void changedUpdate(DocumentEvent e) {
-
-                onUpdate();
-            }
+            public void changedUpdate(DocumentEvent e) {onUpdate();}
 
 
             /**
@@ -171,7 +175,7 @@ public class LocationWindow extends JFrame {
             }
         });
 
-        mSearchBarPanel.add(textField);
+        mSearchBarPanel.add(textField, BorderLayout.CENTER);
     }
 
 
@@ -227,7 +231,6 @@ public class LocationWindow extends JFrame {
         });
 
         list.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
 
         // Scrollable list so that all results can be found
         JScrollPane scrollPane = new JScrollPane(list);
