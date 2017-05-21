@@ -145,14 +145,19 @@ public class MainWindow extends JFrame {
         labelLocation.setFont(new Font(labelLocation.getFont().getName(), Font.PLAIN, 24));
         mDayPanel.add(labelLocation, BorderLayout.CENTER);
         // Button for going to the location screen
-        JButton buttonLocation = new JButton();
-        buttonLocation.setBackground(new Color(255, 0, 0));
+        JButton buttonLocation = new JButton(getCompassIcon());
         mDayPanel.add(buttonLocation, BorderLayout.LINE_END);
+
+        buttonLocation.setBorder(BorderFactory.createEmptyBorder());
+        buttonLocation.setOpaque(false);
+        buttonLocation.setContentAreaFilled(false);
+        buttonLocation.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         buttonLocation.addActionListener(e -> {
             // Location button pressed
             System.out.println("Location button clicked");
         });
+
     }
 
 
@@ -343,6 +348,18 @@ public class MainWindow extends JFrame {
         ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
         Image image = icon.getImage(); // transform it
         Image newimg = image.getScaledInstance(85, 50, Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+        return icon;
+    }
+
+
+    private ImageIcon getCompassIcon() {
+        //construct filepath for the icon
+        String filepath = "art/use_these/other_icons/compass.png";
+
+        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(40, 40, Image.SCALE_SMOOTH); // scale it the smooth way
         icon = new ImageIcon(newimg);  // transform it back
         return icon;
     }

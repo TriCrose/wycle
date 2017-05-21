@@ -82,6 +82,7 @@ public class WeekWindow extends JFrame {
 
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.setBackground(new Color(255, 255, 255, 100));
+        panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         panel.addMouseListener(new MouseAdapter() {
             @Override
@@ -89,20 +90,6 @@ public class WeekWindow extends JFrame {
 
                 // change to new screen with this location
                 System.out.println("clicked recent " + this.toString());
-            }
-
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-                panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-                panel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 

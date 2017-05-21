@@ -101,6 +101,7 @@ public class RecentsRow implements Serializable {
         mRowPanel.add(labelTemp);
 
         mRowPanel.setBackground(new Color(255, 255, 255, 100));
+        mRowPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
 
         mRowPanel.addMouseListener(new MouseAdapter() {
@@ -109,20 +110,6 @@ public class RecentsRow implements Serializable {
 
                 // change to new screen with this location
                 System.out.println("clicked recent " + this.toString());
-            }
-
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-                mRowPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-                mRowPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
