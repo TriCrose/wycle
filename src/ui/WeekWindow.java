@@ -37,8 +37,6 @@ public class WeekWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
 
-
-
         mHeaderPanel = addPanel_Header(0, 0.04);
         JLabel labelLoc = new JLabel(mWeatherForecast.getLocation());
         labelLoc.setFont(new Font(labelLoc.getFont().getName(), Font.PLAIN, 24));
@@ -125,7 +123,6 @@ public class WeekWindow extends JFrame {
             temp = hour.getTemp();
             icon = hour.getIcon(100, 100);
         }
-
 
         //TODO maybe show min/max temp for each day?
         JLabel labelTemp = new JLabel(temp + " °C");

@@ -290,28 +290,55 @@ public class MainWindow extends JFrame {
         if (coeff < 0) coeff = 0;
 
         //different output depending on certain ranges
-        String description;
-        if (coeff < 0.25) {
-            description = "Awful";
-        } else if (coeff < 0.50) {
-            description = "Poor";
-        } else if (coeff < 0.75) {
-            description = "Okay";
-        } else {
-            description = "Good";
-        }
+//        String description;
+//        if (coeff < 0.25) {
+//            description = "Awful";
+//        } else if (coeff < 0.50) {
+//            description = "Poor";
+//        } else if (coeff < 0.75) {
+//            description = "Okay";
+//        } else {
+//            description = "Good";
+//        }
+
+        //get the icon for the current coefficient
+        ImageIcon icon = getCyclingCoefficientIcon(coeff);
 
         //for testing purposes
         System.out.println(coeff);
 
         //coeff of 0 gives bright red, 0.5 gives yellow, and 1.0 gives bright green
-        Color coeffColor = Color.getHSBColor((float)(coeff*0.4), (float)0.9, (float)0.9);
+//        Color coeffColor = Color.getHSBColor((float)(coeff*0.4), (float)0.9, (float)0.9);
 
         //create, colour, and format label
-        JLabel ccLabel = new JLabel(description);
-        ccLabel.setForeground(coeffColor);
-        ccLabel.setFont(new Font(ccLabel.getFont().getName(), Font.BOLD, 30));
+        JLabel ccLabel = new JLabel(icon);
+//        ccLabel.setForeground(coeffColor);
+//        ccLabel.setFont(new Font(ccLabel.getFont().getName(), Font.BOLD, 30));
 
         return ccLabel;
+    }
+
+
+    private ImageIcon getCyclingCoefficientIcon(double coeff) {
+        //begin constructing filepath for icon
+        String filepath = "art/use_these/bike_coeffs/";
+        //access appropriate bike icon depending on given coefficient
+        if (coeff < 0.2) {
+            filepath += "bike1x.png";
+        } else if (coeff < 0.4) {
+            filepath += "bike2x.png";
+        } else if (coeff < 0.6) {
+            filepath += "bike3x.png";
+        } else if (coeff < 0.8) {
+            filepath += "bike4x.png";
+        } else {
+            filepath += "bike5x.png";
+        }
+
+        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(85, 50, Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+        return icon;
     }
 }

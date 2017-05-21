@@ -33,7 +33,6 @@ public class DetailedRow {
         JLabel labelrain = new JLabel(weatherHour.getRain() + " mm");
         JLabel labeltemp = new JLabel(weatherHour.getTemp() + " °C");
         JLabel labelwind = new JLabel(weatherHour.getWind() + " mph");
-        //TODO resize icons
         JLabel labelicon = new JLabel(weatherHour.getIcon());
 
         // Set the text to be centered
