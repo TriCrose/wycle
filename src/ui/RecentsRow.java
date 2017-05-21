@@ -81,7 +81,7 @@ public class RecentsRow implements Serializable {
      *
      * @return JPanel: the panel which contains the weather data in a GridLayout
      */
-    public JPanel getPanel() {
+    public JPanel getPanel(Color fontColor) {
 
         mRowPanel = new JPanel(new GridLayout(1, 0));
 
@@ -94,6 +94,10 @@ public class RecentsRow implements Serializable {
         labelPlace.setHorizontalAlignment(JLabel.CENTER);
         labelIcon.setHorizontalAlignment(JLabel.CENTER);
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
+
+        labelPlace.setForeground(fontColor);
+        labelIcon.setForeground(fontColor);
+        labelTemp.setForeground(fontColor);
 
         // Add them to the pane
         mRowPanel.add(labelPlace);

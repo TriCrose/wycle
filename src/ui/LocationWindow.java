@@ -40,6 +40,8 @@ public class LocationWindow extends JFrame {
     // File location for location frequencies
     private String mFrequentsPath = "data/location_frequencies";
 
+    private Color fontColor;
+
 
     /**
      * Create a new LocationWindow.
@@ -59,6 +61,13 @@ public class LocationWindow extends JFrame {
         setSize(AppParams.WIDTH, AppParams.HEIGHT);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
+
+        // Set font colour depending on day or night
+        if (mWeatherForecast.getWeather().getIsDay() == 1) {
+            fontColor = Color.black;
+        } else {
+            fontColor = Color.white;
+        }
 
         mSearchBarPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.01);
         mSearchBarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -264,7 +273,7 @@ public class LocationWindow extends JFrame {
 
                 rr.updateWeather();
 
-                JPanel panel = rr.getPanel();
+                JPanel panel = rr.getPanel(fontColor);
                 mRecentLocationsPanel.add(panel);
             }
         } else {
@@ -272,7 +281,7 @@ public class LocationWindow extends JFrame {
             // Draw the recent panels with their locations
             for (int i = 0; i < 6; i++) {
                 mRecentsList.get(i).updateWeather();
-                JPanel panel = mRecentsList.get(i).getPanel();
+                JPanel panel = mRecentsList.get(i).getPanel(fontColor);
                 mRecentLocationsPanel.add(panel);
             }
         }
