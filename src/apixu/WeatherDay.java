@@ -95,7 +95,11 @@ public class WeatherDay {
         filepath += "day/";
         //search the condition text for key words to select the icon
         if (mCondition.getText().contains("rain")) {
-            filepath += "rainy.png";
+            if (mCondition.getText().contains("Patchy") || mCondition.getText().contains("Light")) {
+                filepath += "cloudysunny.png";
+            } else {
+                filepath += "rainy.png";
+            }
         } else if (mCondition.getText().contains("Sunny") || mCondition.getText().contains("Clear")) {
             filepath += "sunny.png";
         } else if ((mCondition.getText().contains("Cloudy") || mCondition.getText().contains("Overcast")) || mCondition

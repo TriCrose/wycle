@@ -75,11 +75,11 @@ public class MainWindow extends JFrame {
         //begin constructing filepath for icon
         String filepath = "art/use_these/wind_icons/";
         //access appropriate bike icon depending on given coefficient
-        if (wind < 1) {
+        if (wind < 6) {
             filepath += "wind0.png";
-        } else if (wind < 6) {
+        } else if (wind < 8) {
             filepath += "wind1.png";
-        } else if (wind < 11) {
+        } else if (wind < 10) {
             filepath += "wind2.png";
         } else {
             filepath += "wind3.png";

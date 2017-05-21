@@ -6,9 +6,12 @@ import com.weatherlibraryjava.Repository;
 import com.weatherlibraryjava.RequestBlocks;
 import location.LocationObject;
 
+import javax.print.attribute.HashPrintJobAttributeSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WeatherForecast {
 
@@ -160,7 +163,21 @@ public class WeatherForecast {
         double wind = mWeatherModel.forecast.forecastday.get(day).getDay().maxwind_mph;
         double rain = mWeatherModel.forecast.forecastday.get(day).getDay().totalprecip_mm;
 
-        Condition cond = mWeatherModel.forecast.forecastday.get(day).getHour().get(12).getCondition();
+        //find most common condition from 7am onwards
+        Map<Condition, Integer> conditionCount = new HashMap<>();
+        for (int i = 6; i<24; i++) {
+            Condition cond = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getCondition();
+            if (!(conditionCount.containsKey(cond))) {
+                conditionCount.put(cond, 0);
+            }
+            conditionCount.put(cond, conditionCount.get(cond) + 1);
+        }
+        Condition cond = null;
+        for (Condition key : conditionCount.keySet()) {
+            if (cond == null || conditionCount.get(key).compareTo(conditionCount.get(cond)) > 0) {
+                cond = key;
+            }
+        }
 
         return new WeatherDay(dayName, wind, avgT, maxT, minT, rain, cond);
     }
