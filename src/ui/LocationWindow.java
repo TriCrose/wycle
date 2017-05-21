@@ -8,7 +8,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -62,7 +61,7 @@ public class LocationWindow extends JFrame {
         setLayout(new GridBagLayout());
 
         mSearchBarPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.01);
-        mSearchBarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        mSearchBarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         drawSearchBar();
 
         mSuggestionsPanel = addPanel(new JPanel(new BorderLayout()), 1, 0.24);
@@ -129,8 +128,7 @@ public class LocationWindow extends JFrame {
      */
     private void drawSearchBar() {
 
-        Color searchBarBackground = new Color(186, 215, 240);
-
+        Color searchBarBackground = new Color(255, 255, 255);
         ImageIcon icon = new ImageIcon("art/use_these/other_icons/magnifying_glass.png"); //convert png to ImageIcon
         Image image = icon.getImage(); // transform it
         Image newimg = image.getScaledInstance(30, 30, Image.SCALE_SMOOTH); // scale it the smooth way
@@ -223,10 +221,12 @@ public class LocationWindow extends JFrame {
         // TODO: change action to switch to selected weather page
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                // List item selected
-                System.out.println("clicked " + list.getSelectedValue());
+                if (list.getSelectedIndex() > -1) {
+                    // List item selected
+                    System.out.println("clicked " + list.getSelectedValue());
 
-                incrementFrequency(list.getSelectedValue());
+                    incrementFrequency(list.getSelectedValue());
+                }
             }
         });
 
@@ -240,28 +240,6 @@ public class LocationWindow extends JFrame {
 
         scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
-        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-            @Override
-            protected JButton createDecreaseButton(int orientation) {
-
-                JButton button = super.createDecreaseButton(orientation);
-
-                button.setBorder(BorderFactory.createEmptyBorder());
-
-                return button;
-            }
-
-
-            @Override
-            protected JButton createIncreaseButton(int orientation) {
-
-                JButton button = super.createIncreaseButton(orientation);
-
-                button.setBorder(BorderFactory.createEmptyBorder());
-
-                return button;
-            }
-        });
         mSuggestionsPanel.add(scrollPane);
     }
 
@@ -311,22 +289,13 @@ public class LocationWindow extends JFrame {
                 updated = true;
 
                 rr.incrementFrequency();
-
-                System.out.println(rr.getmFrequency());
             }
         }
 
         if (!updated) {
             RecentsRow rr = new RecentsRow(lo);
             mRecentsList.add(rr);
-
-            System.out.println(rr.getmFrequency());
         }
-
-        mRecentsList.forEach(r -> {
-            System.out.println(r);
-            System.out.println();
-        });
     }
 
 
@@ -379,8 +348,8 @@ public class LocationWindow extends JFrame {
             }
 
             try {
-                String cityName = (String) value.getClass().getDeclaredMethod("getCity", null).invoke(value);
-                String countryName = (String) value.getClass().getDeclaredMethod("getCountry", null).invoke(value);
+                String cityName = (String) value.getClass().getDeclaredMethod("getCity").invoke(value);
+                String countryName = (String) value.getClass().getDeclaredMethod("getCountry").invoke(value);
                 label.setText(cityName + ", " + countryName);
             } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
