@@ -5,3 +5,4 @@ wycle.iml
 .settings/
 bin/
 out/
+data/location_frequencies

@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-
 public class WeatherForecast {
 
     //Our personal API key for making requests
@@ -19,16 +18,19 @@ public class WeatherForecast {
     //Weather model contains current and forecasted weather for a given location
     private WeatherModel mWeatherModel;
 
+
     /**
      * @param location uses the latitude and longitude from the location object
      *                 to set the location for the weather request a create the
      *                 Weather Model
      */
     public WeatherForecast(LocationObject location) {
+
         try {
             Repository repo = new Repository();
             WeatherModel now = repo.GetWeatherDataByLatLong(key, location.getLat(), location.getLng());
-            mWeatherModel = repo.GetWeatherDataByLatLong(key, location.getLat(), location.getLng(), RequestBlocks.Days.Six);
+            mWeatherModel = repo
+                    .GetWeatherDataByLatLong(key, location.getLat(), location.getLng(), RequestBlocks.Days.Six);
             mWeatherModel.current = now.current;
         } catch (Exception e) {
             //TODO handle real exceptions
@@ -36,11 +38,13 @@ public class WeatherForecast {
         }
     }
 
+
     /**
      * Overloaded constructor method, not specifying a location will derive
      * location from your IP address and find weather for that location
      */
     public WeatherForecast() {
+
         try {
             Repository repo = new Repository();
             WeatherModel now = repo.GetWeatherDataByAutoIP(key);
@@ -52,17 +56,56 @@ public class WeatherForecast {
         }
     }
 
+
+    public WeatherForecast(LocationObject location, boolean getForecast) {
+
+        try {
+            Repository repo = new Repository();
+            if (getForecast) {
+                mWeatherModel = repo
+                        .GetWeatherDataByLatLong(key, location.getLat(), location.getLng(), RequestBlocks.Days.Six);
+            } else {
+                WeatherModel now = repo.GetWeatherDataByLatLong(key, location.getLat(), location.getLng());
+                mWeatherModel = now;
+                mWeatherModel.current = now.current;
+            }
+        } catch (Exception e) {
+            //TODO handle real exceptions
+            e.printStackTrace();
+        }
+    }
+
+
+    public WeatherForecast(boolean getForecast) {
+
+        try {
+            Repository repo = new Repository();
+            if (getForecast) {
+                mWeatherModel = repo.GetWeatherDataByAutoIP(key, RequestBlocks.Days.Six);
+            } else {
+                WeatherModel now = repo.GetWeatherDataByAutoIP(key);
+                mWeatherModel = now;
+                mWeatherModel.current = now.current;
+            }
+        } catch (Exception e) {
+            //TODO handle real exceptions
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * Get hourly weather data for a specified day
      *
      * @param day the day 'x' days after today that you want to retrieve, 0 is today,
      *            1 is tomorrow etc.
      * @return list of 24 WeatherHour objects, each containing wind, rain, temperature
-     *         and condition for every hour of the requested day
+     * and condition for every hour of the requested day
      */
     public ArrayList<WeatherHour> getWeather(int day) {
+
         ArrayList<WeatherHour> table = new ArrayList<>();
-        for (int i = 0; i<24; i++) {
+        for (int i = 0; i < 24; i++) {
             String time = mWeatherModel.forecast.forecastday.get(day).getHour().get(i).getTime();
             //getTime returns yyyy-mm-dd hh:mm format, so take last 5 characters
             time = time.substring(time.length() - 5);
@@ -78,14 +121,16 @@ public class WeatherForecast {
         return table;
     }
 
+
     /**
      * Overloaded method, not specifying a day will retrieve weather data for the current time
      * Returns a single set of data i.e. for the current hour
      *
      * @return a single WeatherHour object, containing the temp, wind, rain and condition
-     *         for the current hour
+     * for the current hour
      */
     public WeatherHour getWeather() {
+
         Condition cond = mWeatherModel.current.getCondition();
         double rain = mWeatherModel.current.getPrecipMm();
         double temp = mWeatherModel.current.getTempC();
@@ -93,6 +138,7 @@ public class WeatherForecast {
         int isDay = mWeatherModel.current.getIsDay();
         return new WeatherHour("now", temp, wind, rain, cond, isDay);
     }
+
 
     /**
      * Takes a day and returns a weather summary for that day, containing min/max/avg temp,
@@ -103,6 +149,7 @@ public class WeatherForecast {
      * @return WeatherDay object that contains all the weather data
      */
     public WeatherDay getDaySummary(int day) {
+
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, day);
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
@@ -125,7 +172,7 @@ public class WeatherForecast {
      * @return String containing the location used by the current model
      */
     public String getLocation() {
+
         return mWeatherModel.getLocation().getName();
     }
-
 }

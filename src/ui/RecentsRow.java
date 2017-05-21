@@ -48,7 +48,7 @@ public class RecentsRow implements Serializable {
 
     public void updateWeather() {
 
-        WeatherForecast weatherForecast = new WeatherForecast(mLocationObject);
+        WeatherForecast weatherForecast = new WeatherForecast(mLocationObject, false);
         mTemp = weatherForecast.getWeather().getTemp();
         mIcon = weatherForecast.getWeather().getIcon();
     }

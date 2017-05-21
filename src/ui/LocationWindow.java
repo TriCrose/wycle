@@ -28,6 +28,8 @@ public class LocationWindow extends JFrame {
     private static final Color backColour = new Color(138, 192, 239);
     private static GridBagConstraints constraints = new GridBagConstraints();
 
+    private static WeatherForecast mWeatherForecast;
+
     // Panels for the windows
     private JPanel mSearchBarPanel;
     private JPanel mSuggestionsPanel;
@@ -51,6 +53,8 @@ public class LocationWindow extends JFrame {
 
         super("Wycle");
 
+        mWeatherForecast = MainWindow.getmWeatherForecast();
+
         setBackgroundImage();
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,6 +75,8 @@ public class LocationWindow extends JFrame {
         mRecentLocationsPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         drawRecentLocations();
 
+        Runtime.getRuntime().addShutdownHook(new Thread(this::setRecentLocations, "Shutdown-thread"));
+
         setVisible(true);
     }
 
@@ -83,8 +89,7 @@ public class LocationWindow extends JFrame {
 
     private void setBackgroundImage() {
 
-        WeatherForecast weatherForecast = new WeatherForecast();
-        boolean isDay = weatherForecast.getWeather().getIsDay() == 1;
+        boolean isDay = mWeatherForecast.getWeather().getIsDay() == 1;
 
         String path = "art/use_these/backgrounds/";
         if (isDay) path += "background_day[bg].png";
@@ -244,6 +249,8 @@ public class LocationWindow extends JFrame {
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
 
+        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+
         scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
             @Override
             protected JButton createDecreaseButton(int orientation) {
@@ -293,7 +300,6 @@ public class LocationWindow extends JFrame {
                 JPanel panel = rr.getPanel();
                 mRecentLocationsPanel.add(panel);
             }
-            setRecentLocations();
         } else {
 
             // Draw the recent panels with their locations
@@ -316,14 +322,22 @@ public class LocationWindow extends JFrame {
                 updated = true;
 
                 rr.incrementFrequency();
+
+                System.out.println(rr.getmFrequency());
             }
         }
 
         if (!updated) {
             RecentsRow rr = new RecentsRow(lo);
             mRecentsList.add(rr);
+
+            System.out.println(rr.getmFrequency());
         }
-        setRecentLocations();
+
+        mRecentsList.forEach(r -> {
+            System.out.println(r);
+            System.out.println();
+        });
     }
 
 
@@ -372,7 +386,7 @@ public class LocationWindow extends JFrame {
             else setBackground(new Color(200, 200, 200, 200));
 
             if (isSelected) {
-                setBackground(new Color(190, 190, 190, 200));
+                setBackground(new Color(170, 170, 170, 200));
             }
 
             try {

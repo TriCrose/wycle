@@ -18,7 +18,7 @@ public class WeekWindow extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private static GridBagConstraints constraints = new GridBagConstraints();
-    private WeatherForecast mWeatherForecast;
+    private static WeatherForecast mWeatherForecast;
     private JPanel mHeaderPanel;
     private JPanel mDayIconsPanel;
 
@@ -26,6 +26,8 @@ public class WeekWindow extends JFrame {
     public WeekWindow() {
 
         super("Wycle");
+
+        mWeatherForecast = MainWindow.getmWeatherForecast();
 
         setBackgroundImage();
 
@@ -35,7 +37,7 @@ public class WeekWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
 
-        mWeatherForecast = MainWindow.getmWeatherForecast();
+
 
         mHeaderPanel = addPanel_Header(0, 0.04);
         JLabel labelLoc = new JLabel(mWeatherForecast.getLocation());
@@ -176,8 +178,7 @@ public class WeekWindow extends JFrame {
 
     private void setBackgroundImage() {
 
-        WeatherForecast weatherForecast = new WeatherForecast();
-        boolean isDay = weatherForecast.getWeather().getIsDay() == 1;
+        boolean isDay = mWeatherForecast.getWeather().getIsDay() == 1;
 
         String path = "art/use_these/backgrounds/";
         if (isDay) path += "background_day[bg].png";

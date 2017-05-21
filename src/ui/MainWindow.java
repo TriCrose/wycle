@@ -118,7 +118,7 @@ public class MainWindow extends JFrame {
 
         JLabel labelLocation = new JLabel(mWeatherForecast.getLocation());
         labelLocation.setHorizontalAlignment(JLabel.CENTER);
-        labelLocation.setFont(new Font(labelLocation.getFont().getName(), Font.PLAIN, 20));
+        labelLocation.setFont(new Font(labelLocation.getFont().getName(), Font.PLAIN, 24));
         mDayPanel.add(labelLocation, BorderLayout.CENTER);
         // Button for going to the location screen
         JButton buttonLocation = new JButton();
@@ -137,7 +137,7 @@ public class MainWindow extends JFrame {
      */
     private void drawIcons() {
 
-        WeatherHour weatherForecast = new WeatherForecast().getWeather();
+        WeatherHour weatherForecast = mWeatherForecast.getWeather();
 
         ImageIcon icon = weatherForecast.getIcon(100, 100);
 
@@ -256,8 +256,7 @@ public class MainWindow extends JFrame {
 
     private void setBackgroundImage() {
 
-        WeatherForecast weatherForecast = new WeatherForecast();
-        boolean isDay = weatherForecast.getWeather().getIsDay() == 1;
+        boolean isDay = mWeatherForecast.getWeather().getIsDay() == 1;
 
         String path = "art/use_these/backgrounds/";
         if (isDay) path += "background_day[bg].png";
