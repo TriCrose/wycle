@@ -36,8 +36,8 @@ public class WeatherForecast {
                     .GetWeatherDataByLatLong(key, location.getLat(), location.getLng(), RequestBlocks.Days.Six);
             mWeatherModel.current = now.current;
         } catch (Exception e) {
-            //TODO handle real exceptions
             e.printStackTrace();
+            System.out.println("Invalid latitude/longitude");
         }
     }
 
@@ -54,7 +54,6 @@ public class WeatherForecast {
             mWeatherModel = repo.GetWeatherDataByAutoIP(key, RequestBlocks.Days.Six);
             mWeatherModel.current = now.current;
         } catch (Exception e) {
-            //TODO handle real exceptions
             e.printStackTrace();
         }
     }
@@ -73,8 +72,8 @@ public class WeatherForecast {
                 mWeatherModel.current = now.current;
             }
         } catch (Exception e) {
-            //TODO handle real exceptions
             e.printStackTrace();
+            System.out.println("Invalid latitude/longitude");
         }
     }
 
@@ -91,7 +90,6 @@ public class WeatherForecast {
                 mWeatherModel.current = now.current;
             }
         } catch (Exception e) {
-            //TODO handle real exceptions
             e.printStackTrace();
         }
     }
@@ -192,4 +190,5 @@ public class WeatherForecast {
 
         return mWeatherModel.getLocation().getName();
     }
+
 }

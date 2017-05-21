@@ -204,8 +204,7 @@ public class MainWindow extends JFrame {
         } else {
             WeatherDay currentWeather = mWeatherForecast.getDaySummary(mDayIndex);
 
-            // TODO: Is it possible to have this do the average rain?
-            rain = currentWeather.getTotalRain();
+            rain = currentWeather.getTotalRain()/24;
             temp = currentWeather.getAvgTemp();
             wind = currentWeather.getMaxWind();
         }
