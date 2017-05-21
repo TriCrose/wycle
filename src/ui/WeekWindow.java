@@ -21,6 +21,7 @@ public class WeekWindow extends JFrame {
     private static WeatherForecast mWeatherForecast;
     private JPanel mHeaderPanel;
     private JPanel mDayIconsPanel;
+    private Color fontColor;
 
 
     public WeekWindow() {
@@ -37,9 +38,17 @@ public class WeekWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
 
+        // Set font colour depending on day or night
+        if (mWeatherForecast.getWeather().getIsDay() == 1) {
+            fontColor = Color.black;
+        } else {
+            fontColor = Color.white;
+        }
+
         mHeaderPanel = addPanel_Header(0, 0.04);
         JLabel labelLoc = new JLabel(mWeatherForecast.getLocation());
         labelLoc.setFont(new Font(labelLoc.getFont().getName(), Font.PLAIN, 24));
+        labelLoc.setForeground(fontColor);
         labelLoc.setHorizontalAlignment(JLabel.CENTER);
 
         mHeaderPanel.add(labelLoc);
@@ -95,6 +104,7 @@ public class WeekWindow extends JFrame {
 
         JLabel labelDay = new JLabel(currentDay);
         labelDay.setFont(new Font(labelDay.getFont().getName(), Font.BOLD, 14));
+        labelDay.setForeground(fontColor);
         panel.add(labelDay);
 
         labelDay.setHorizontalAlignment(JLabel.CENTER);
@@ -113,6 +123,9 @@ public class WeekWindow extends JFrame {
 
         JLabel labelTemp = new JLabel(temp);
         JLabel labelIcon = new JLabel(icon);
+
+        labelTemp.setForeground(fontColor);
+        labelIcon.setForeground(fontColor);
 
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
         labelIcon.setHorizontalAlignment(JLabel.CENTER);
