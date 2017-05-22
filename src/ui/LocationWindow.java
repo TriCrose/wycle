@@ -22,9 +22,9 @@ import java.util.Random;
 public class LocationWindow extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private static final Color backColour = new Color(138, 192, 239);
     private static GridBagConstraints constraints = new GridBagConstraints();
 
+    // store the weather forecast to reduce api calls
     private static WeatherForecast mWeatherForecast;
 
     // Panels for the windows
@@ -39,7 +39,7 @@ public class LocationWindow extends JFrame {
     private ArrayList<RecentsRow> mRecentsList;
     // File location for location frequencies
     private String mFrequentsPath = "data/location_frequencies";
-
+    // color for the font, changes depending isDay
     private Color fontColor;
 
 
@@ -52,6 +52,7 @@ public class LocationWindow extends JFrame {
 
         super("Wycle");
 
+        // get the latest weather
         mWeatherForecast = MainWindow.getmWeatherForecast();
 
         setBackgroundImage();
@@ -69,6 +70,7 @@ public class LocationWindow extends JFrame {
             fontColor = Color.white;
         }
 
+        // make, add and draw the panels
         mSearchBarPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.01);
         mSearchBarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         drawSearchBar();
@@ -81,8 +83,9 @@ public class LocationWindow extends JFrame {
         mRecentLocationsPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         drawRecentLocations();
 
+        // set a method to run on shutdown which saves the recents list
         Runtime.getRuntime().addShutdownHook(new Thread(this::setRecentLocations, "Shutdown-thread"));
-
+        // show the window
         setVisible(true);
     }
 
@@ -93,18 +96,23 @@ public class LocationWindow extends JFrame {
     }
 
 
+    /**
+     * Set the background to the appropriate image depending on whether it is daytime or nighttime
+     */
     private void setBackgroundImage() {
 
         boolean isDay = mWeatherForecast.getWeather().getIsDay() == 1;
 
+        // set path to image
         String path = "art/use_these/backgrounds/";
         if (isDay) path += "background_day[bg].png";
         else path += "background_night[bg].png";
 
+        // load the image and set it to be the background
         try {
             Image backgroundImage = ImageIO.read(new File(path));
             JLabel background = new JLabel(new ImageIcon(backgroundImage));
-            this.setContentPane(background);
+            setContentPane(background);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -137,23 +145,26 @@ public class LocationWindow extends JFrame {
      */
     private void drawSearchBar() {
 
+        // color for the searchBar
         Color searchBarBackground = new Color(255, 255, 255);
+
+        // get and set the icon for the search bar
         ImageIcon icon = new ImageIcon("art/use_these/other_icons/magnifying_glass.png"); //convert png to ImageIcon
         Image image = icon.getImage(); // transform it
         Image newimg = image.getScaledInstance(30, 30, Image.SCALE_SMOOTH); // scale it the smooth way
         icon = new ImageIcon(newimg);  // transform it back
 
+        // add to panel and style
         JLabel searchIcon = new JLabel(icon);
         searchIcon.setOpaque(true);
         searchIcon.setBackground(searchBarBackground);
 
         mSearchBarPanel.add(searchIcon, BorderLayout.LINE_START);
 
-        // Make the new textfield object
+        // Make the new textfield object and set style
         JTextField textField = new JTextField(10);
         textField.setFont(new Font(textField.getFont().getName(), Font.BOLD, textField.getFont().getSize()));
         textField.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
-        // Same colour as main background
         textField.setBackground(searchBarBackground);
 
         // Add a listener for when a character is typed or removed in the textfield
@@ -238,7 +249,7 @@ public class LocationWindow extends JFrame {
                 }
             }
         });
-
+        // show hand for better UX
         list.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Scrollable list so that all results can be found
@@ -246,7 +257,7 @@ public class LocationWindow extends JFrame {
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
-
+        // hide ugly scrollbars
         scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
         mSuggestionsPanel.add(scrollPane);
@@ -259,12 +270,10 @@ public class LocationWindow extends JFrame {
     private void drawRecentLocations() {
 
         // Get the cities
-
         getRecentLocations();
 
         if (mRecentsList == null) {
             // Need to auto generate some random cities
-
             ArrayList<LocationObject> cities = LocationStore.getCities();
             mRecentsList = new ArrayList<>();
             for (int i = 0; i < 6; i++) {
@@ -288,10 +297,17 @@ public class LocationWindow extends JFrame {
     }
 
 
+    /**
+     * Find the appropriate recent row and update the frequency, allowing for updating of the recent rows as users
+     * select locations.
+     *
+     * @param lo locationObject which is used to find the corresponding RecentRow
+     */
     private void incrementFrequency(LocationObject lo) {
 
         boolean updated = false;
 
+        // try to find the object
         for (RecentsRow rr : mRecentsList) {
             // intended to test by reference
             if (rr.getmLocationObject() == lo) {
@@ -300,7 +316,7 @@ public class LocationWindow extends JFrame {
                 rr.incrementFrequency();
             }
         }
-
+        // didn't find one so make a new one
         if (!updated) {
             RecentsRow rr = new RecentsRow(lo);
             mRecentsList.add(rr);
@@ -308,22 +324,28 @@ public class LocationWindow extends JFrame {
     }
 
 
+    /**
+     * Read the recents list from the file, it is already sorted so no extra work is needed.
+     */
     private void getRecentLocations() {
         // Read in current frequency data from file
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(mFrequentsPath))) {
 
             mRecentsList = (ArrayList<RecentsRow>) ois.readObject();
         } catch (FileNotFoundException e) {
-            System.out.println("The file to output to could not be found");
-            System.out.println("A new file will be created");
+            System.out.println("The file to input from could not be found");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
 
+    /**
+     * Sort the recents list before writing it to file using serialising
+     */
     private void setRecentLocations() {
 
+        // sort on frequencies
         mRecentsList.sort((o1, o2) -> o2.getmFrequency() - o1.getmFrequency());
 
         // Write the current data out to file
@@ -339,23 +361,30 @@ public class LocationWindow extends JFrame {
     }
 
 
+    /**
+     * Custom renderer for the list containing the search suggestions.
+     * This colours cells in alternating colours to more easily distinguish the rows
+     */
     public class CustomListCellRenderer extends DefaultListCellRenderer {
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-                                                      boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
+            // remove borders
             label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
+            // alternate colour
             if (index % 2 == 0) setBackground(new Color(230, 230, 230, 200));
             else setBackground(new Color(200, 200, 200, 200));
 
+            // if selected show darker to indicate
             if (isSelected) {
                 setBackground(new Color(170, 170, 170, 200));
             }
 
+            // give the label the correct text using reflection
             try {
                 String cityName = (String) value.getClass().getDeclaredMethod("getCity").invoke(value);
                 String countryName = (String) value.getClass().getDeclaredMethod("getCountry").invoke(value);

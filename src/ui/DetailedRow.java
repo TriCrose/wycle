@@ -10,6 +10,7 @@ import java.awt.*;
  */
 public class DetailedRow {
 
+    // panel storing weather info to be displayed
     private JPanel mRowPanel;
 
 
@@ -26,6 +27,7 @@ public class DetailedRow {
      */
     public JPanel getPanel(WeatherHour weatherHour, Color fontColor) {
 
+        // set a new panel to contain the data
         mRowPanel = new JPanel(new GridLayout(1, 0));
 
         // Set the labels with the relevant weather data
@@ -56,8 +58,6 @@ public class DetailedRow {
         mRowPanel.add(labeltemp);
         mRowPanel.add(labelwind);
         mRowPanel.add(labelicon);
-
-        mRowPanel.setBackground(new Color(138, 192, 239));
 
         return mRowPanel;
     }

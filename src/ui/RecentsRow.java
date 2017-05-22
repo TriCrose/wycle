@@ -46,6 +46,9 @@ public class RecentsRow implements Serializable {
     }
 
 
+    /**
+     * Update the weather data as has been stored in a file or is a new instance, set the according values
+     */
     public void updateWeather() {
 
         WeatherForecast weatherForecast = new WeatherForecast(mLocationObject, false);
@@ -63,12 +66,18 @@ public class RecentsRow implements Serializable {
     }
 
 
+    /**
+     * @return the locationObject contained in this object
+     */
     public LocationObject getmLocationObject() {
 
         return mLocationObject;
     }
 
 
+    /**
+     * @return the frequency of how often this one has been selected
+     */
     public int getmFrequency() {
 
         return mFrequency;
@@ -95,6 +104,7 @@ public class RecentsRow implements Serializable {
         labelIcon.setHorizontalAlignment(JLabel.CENTER);
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
 
+        // set the color of the text
         labelPlace.setForeground(fontColor);
         labelIcon.setForeground(fontColor);
         labelTemp.setForeground(fontColor);
@@ -105,14 +115,15 @@ public class RecentsRow implements Serializable {
         mRowPanel.add(labelTemp);
 
         mRowPanel.setBackground(new Color(255, 255, 255, 100));
+        // change cursor for better UX
         mRowPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-
+        // mouse listener for click on this panel
         mRowPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
 
-                // change to new screen with this location
+                // TODO: change to new screen with this location
                 System.out.println("clicked recent " + this.toString());
             }
         });

@@ -19,15 +19,19 @@ import java.util.Locale;
 public class MainWindow extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private static final Color backColour = new Color(138, 192, 239);
     private static GridBagConstraints constraints = new GridBagConstraints();
+    // store the weather forecast to reduce api calls
     private static WeatherForecast mWeatherForecast = new WeatherForecast();
+    // store the panels in the frame
     private JPanel mDayPanel;
     private JPanel mIconsPanel;
     private JPanel mRainWindPanel;
     private JPanel mDetailedPanel;
+    // index to keep track of which day we are displaying
     private int mDayIndex = 0; // change when switching days
+    // current day to display
     private String mCurrentDay;
+    // font color which changes depending on isDay
     private Color fontColor;
 
 
@@ -35,6 +39,7 @@ public class MainWindow extends JFrame {
 
         super("Wycle");
 
+        // set the background image depending on the time of day
         setBackgroundImage();
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -50,6 +55,7 @@ public class MainWindow extends JFrame {
             fontColor = Color.white;
         }
 
+        // make, add and draw the panels
         mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
         mDayPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         drawDay();
@@ -72,17 +78,28 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * @return WeatherForecast object containing the current weather and forecast
+     */
     public static WeatherForecast getmWeatherForecast() {
 
         return mWeatherForecast;
     }
 
 
+    /**
+     * Returns the wind icon scaled to the desired values and the icon depends on the wind value
+     *
+     * @param wind   current wind value
+     * @param width  desired width of the icon
+     * @param height desired height of the icon
+     * @return ImageIcon of wind of desired size and strength
+     */
     public static ImageIcon getWindIcon(double wind, int width, int height) {
 
         //begin constructing filepath for icon
         String filepath = "art/use_these/wind_icons/";
-        //access appropriate bike icon depending on given coefficient
+        //access appropriate wind icon depending on wind strength
         if (wind < 6) {
             filepath += "wind0.png";
         } else if (wind < 8) {
@@ -92,7 +109,7 @@ public class MainWindow extends JFrame {
         } else {
             filepath += "wind3.png";
         }
-
+        // get, scale and return the icon
         ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
         Image image = icon.getImage(); // transform it
         Image newimg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH); // scale it the smooth way
@@ -101,6 +118,10 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * Set the index for the new day, to be used for switching days
+     * @param mDayIndex new index for the day
+     */
     public void setmDayIndex(int mDayIndex) {
 
         this.mDayIndex = mDayIndex;
@@ -111,7 +132,7 @@ public class MainWindow extends JFrame {
      * @param panel  panel to be used to be added
      * @param gridY  desired position of the panel
      * @param weight weight of the panel
-     * @return The panel given
+     * @return The panel given, with added constraints and properties
      */
     private JPanel addPanel(JPanel panel, int gridY, double weight) {
 
@@ -148,7 +169,7 @@ public class MainWindow extends JFrame {
         labelDay.setHorizontalAlignment(JLabel.CENTER);
         labelDay.setForeground(fontColor);
         mDayPanel.add(labelDay, BorderLayout.LINE_START);
-
+        // label for the current location
         JLabel labelLocation = new JLabel(mWeatherForecast.getLocation());
         labelLocation.setHorizontalAlignment(JLabel.CENTER);
         labelLocation.setFont(new Font(labelLocation.getFont().getName(), Font.PLAIN, 24));
@@ -158,11 +179,13 @@ public class MainWindow extends JFrame {
         JButton buttonLocation = new JButton(getCompassIcon());
         mDayPanel.add(buttonLocation, BorderLayout.LINE_END);
 
+        // style button
         buttonLocation.setBorder(BorderFactory.createEmptyBorder());
         buttonLocation.setOpaque(false);
         buttonLocation.setContentAreaFilled(false);
         buttonLocation.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        // listener for when clicked
         buttonLocation.addActionListener(e -> {
             // Location button pressed
             System.out.println("Location button clicked");
@@ -178,6 +201,7 @@ public class MainWindow extends JFrame {
 
         WeatherHour weatherForecast = mWeatherForecast.getWeather();
 
+        // get scaled icon to display
         ImageIcon icon = weatherForecast.getIcon(100, 100);
 
         // Set up the labels
@@ -247,21 +271,23 @@ public class MainWindow extends JFrame {
     private void drawDetailed() {
 
         ArrayList<WeatherHour> weatherHour = mWeatherForecast.getWeather(mDayIndex);
+        // maybe needed so leave as null for now
         ArrayList<WeatherHour> tomorrowWeatherHour = null;
 
+        // current hour of the day
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
         // draw the panels, conditional for whether we can fill the space with just today's weather or need to add
         // tomorrows
         for (int i = 0; i < 10; i++) {
 
-            if (i + hour < weatherHour.size()) {
+            if (i + hour < weatherHour.size()) { // still today
                 DetailedRow dr = new DetailedRow();
                 JPanel panel = dr.getPanel(weatherHour.get(i + hour), fontColor);
                 alternateColourPanel(panel, i);
 
                 mDetailedPanel.add(panel);
-            } else if (i + hour == weatherHour.size() && i != 9) {
+            } else if (i + hour == weatherHour.size() && i != 9) { // enough room for tomorrow
 
                 tomorrowWeatherHour = mWeatherForecast.getWeather(1);
 
@@ -274,7 +300,7 @@ public class MainWindow extends JFrame {
                 label.setForeground(fontColor);
                 panel.add(label);
                 mDetailedPanel.add(panel);
-            } else if (i + hour > weatherHour.size()) {
+            } else if (i + hour > weatherHour.size()) { // tomorrow
                 DetailedRow dr = new DetailedRow();
                 assert tomorrowWeatherHour != null;
                 JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24), fontColor);
@@ -285,6 +311,11 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * Alternately colour panels depending on the given index
+     * @param panel panel to be coloured
+     * @param i index for the alternation
+     */
     private void alternateColourPanel(JPanel panel, int i) {
 
         if (i % 2 == 0) {
@@ -295,6 +326,9 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * Get the appropriate background image and then display it
+     */
     private void setBackgroundImage() {
 
         boolean isDay = mWeatherForecast.getWeather().getIsDay() == 1;
@@ -313,6 +347,10 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * Get the cycling coefficient for the current weather and choose the corresponding icon
+     * @return JLabel with the appropriate cycling coefficient icon
+     */
     private JLabel getCyclingCoefficient() {
         //all weather data referenced in README
         double wind = mWeatherForecast.getWeather().getWind();
@@ -334,13 +372,15 @@ public class MainWindow extends JFrame {
         //get the icon for the current coefficient
         ImageIcon icon = getCyclingCoefficientIcon(coeff);
 
-        //for testing purposes
-        System.out.println(coeff);
-
         return new JLabel(icon);
     }
 
 
+    /**
+     * Get the corresponding image for the coefficient value given and scale it
+     * @param coeff value to use to select image
+     * @return icon of cycling coefficient
+     */
     private ImageIcon getCyclingCoefficientIcon(double coeff) {
         //begin constructing filepath for icon
         String filepath = "art/use_these/bike_coeffs/";
@@ -365,6 +405,10 @@ public class MainWindow extends JFrame {
     }
 
 
+    /**
+     * Get the image for the compass and scale it to fit
+     * @return image icon for the compass
+     */
     private ImageIcon getCompassIcon() {
         //construct filepath for the icon
         String filepath = "art/use_these/other_icons/compass.png";
