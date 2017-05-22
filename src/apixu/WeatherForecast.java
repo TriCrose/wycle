@@ -16,7 +16,7 @@ import java.util.Map;
 public class WeatherForecast {
 
     //Our personal API key for making requests
-    private String key = "bdc5142f54be4c62b03132022171605";
+    private String key = "265cc8d5d5e946a6930191727172205";
 
     //Weather model contains current and forecasted weather for a given location
     private WeatherModel mWeatherModel;
@@ -59,6 +59,15 @@ public class WeatherForecast {
     }
 
 
+    /**
+     * Overloaded constructor to return the current weather data without needing
+     * to make a forecast request, which reduces API requests overall
+     *
+     * @param location uses the latitude and longitude from the location object
+     *                 to set the location for the weather request a create the
+     *                 Weather Model
+     * @param getForecast if true, get forecast data in addition to current data
+     */
     public WeatherForecast(LocationObject location, boolean getForecast) {
 
         try {
@@ -78,6 +87,15 @@ public class WeatherForecast {
     }
 
 
+    /**
+     * Overloaded constructor to return the current weather data without needing
+     * to make a forecast request, which reduces API requests overall
+     *
+     * Not specifying a location derives location from your IP and retrieves
+     * the weather data for your location
+     *
+     * @param getForecast if true, gets forecast in addition to current weather
+     */
     public WeatherForecast(boolean getForecast) {
 
         try {
