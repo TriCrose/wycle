@@ -13,6 +13,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class handles all requests to the APIXU API. It stores a WeatherModel
+ * member and has functions for generating hourly breakdowns of up to 6 days, as
+ * well as summaries for those 6 days.
+ */
 public class WeatherForecast {
 
     //Our personal API key for making requests

@@ -5,6 +5,9 @@ import com.weatherlibrary.datamodel.Condition;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A class to represent one day's summary of weather information
+ */
 public class WeatherDay {
 
     //Current day of the week, expressed in full
@@ -87,7 +90,14 @@ public class WeatherDay {
         return mCondition;
     }
 
-
+    /**
+     * Getter for the hour's icon. The icon used is determine by some parsing
+     * of the weather condition and whether or not it is day
+     *
+     * @param width specify the width of the icon to be returned
+     * @param height specify the height of the icon to be returned
+     * @return appropriate weather icon of requested width and height
+     */
     public ImageIcon getIcon(int width, int height) {
         //begin constructing filepath for icon
         String filepath = "art/use_these/weather_icons/";
@@ -114,7 +124,12 @@ public class WeatherDay {
         return mIcon;
     }
 
-
+    /**
+     * Overloaded getter, not specifying a width and height returns
+     * a default size of 50x50
+     *
+     * @return appropriate weather icon 50x50 size
+     */
     public ImageIcon getIcon() {
 
         return getIcon(50, 50);

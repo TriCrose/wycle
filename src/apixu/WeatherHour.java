@@ -5,6 +5,9 @@ import com.weatherlibrary.datamodel.Condition;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A class to represent one hour's worth of weather information
+ */
 public class WeatherHour {
 
     //24 hour time, as a string
