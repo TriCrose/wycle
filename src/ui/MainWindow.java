@@ -7,6 +7,8 @@ import apixu.WeatherHour;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -201,12 +203,33 @@ public class MainWindow extends JFrame {
 
         WeatherHour weatherForecast = mWeatherForecast.getWeather();
 
-        // get scaled icon to display
+        // Get scaled icon to display
         ImageIcon icon = weatherForecast.getIcon(100, 100);
 
         // Set up the labels
-        JLabel labelBikeCoefficient = getCyclingCoefficient();
+        JLabel labelBikeCoefficient = new JLabel(getCyclingCoefficientIcon(getCyclingCoefficient()));
         JLabel labelWeatherIcon = new JLabel(icon);
+
+        // Set font parameters for BikeCoefficient message
+        labelBikeCoefficient.setForeground(fontColor);
+        labelBikeCoefficient.setFont(new Font(labelBikeCoefficient.getFont().getName(), Font.BOLD, 16));
+
+        // Mouse over event that displays a brief description of the cycling coefficient
+        labelBikeCoefficient.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                labelBikeCoefficient.setIcon(null);
+                labelBikeCoefficient.setText(getCyclingCoefficientMessage(getCyclingCoefficient()));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                labelBikeCoefficient.setIcon(getCyclingCoefficientIcon(getCyclingCoefficient()));
+                labelBikeCoefficient.setText(null);
+            }
+        });
 
         // Center them
         labelBikeCoefficient.setHorizontalAlignment(JLabel.CENTER);
@@ -348,10 +371,11 @@ public class MainWindow extends JFrame {
 
 
     /**
-     * Get the cycling coefficient for the current weather and choose the corresponding icon
-     * @return JLabel with the appropriate cycling coefficient icon
+     * Get the cycling coefficient for the current weather
+     *
+     * @return cycling coefficient as a double
      */
-    private JLabel getCyclingCoefficient() {
+    private double getCyclingCoefficient() {
         //all weather data referenced in README
         double wind = mWeatherForecast.getWeather().getWind();
         double temp = mWeatherForecast.getWeather().getTemp();
@@ -369,10 +393,27 @@ public class MainWindow extends JFrame {
         if (coeff > 1) coeff = 1;
         if (coeff < 0) coeff = 0;
 
-        //get the icon for the current coefficient
-        ImageIcon icon = getCyclingCoefficientIcon(coeff);
+        return coeff;
+    }
 
-        return new JLabel(icon);
+    /**
+     * @param coeff the cycling coefficient value
+     * @return the relevant description for that value
+     */
+    private String getCyclingCoefficientMessage(double coeff) {
+        String message;
+        if (coeff < 0.2) {
+            message = "<html><div style='text-align: center;'>Terrible conditions for cycling, be careful!</html>";
+        } else if (coeff < 0.4) {
+            message = "<html><div style='text-align: center;'>Poor conditions for cycling</html>";
+        } else if (coeff < 0.6) {
+            message = "<html><div style='text-align: center;'>Okay conditions for cycling</html>";
+        } else if (coeff < 0.8) {
+            message = "<html><div style='text-align: center;'>Good conditions for cycling</html>";
+        } else {
+            message = "<html><div style='text-align: center;'>Great conditions for cycling, have fun!</html>";
+        }
+        return message;
     }
 
 
