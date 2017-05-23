@@ -42,7 +42,7 @@ public class AppWindow extends JFrame {
         if (mWeatherForecast.getWeather().getIsDay() == 1) fontColor = Color.black;
         else fontColor = Color.white;
 
-        goToMainPage();
+        goToMainPage(0);
         setVisible(true);
     }
 
@@ -70,19 +70,27 @@ public class AppWindow extends JFrame {
     }
     
     // Functions for navigation
-    public void goToLocationPage() {
+    public void goToMainPage(int dayIndex) {
+    	mDayIndex = dayIndex;
     	removeAll();
-    	add(new LocationPanel(this));
+    	add(new MainPanel(this));
+    	currentPage = 0;
     }
     
     public void goToWeekPage() {
     	removeAll();
     	add(new WeekPanel(this));
+    	currentPage = 1;
     }
     
-    public void goToMainPage() {
+    public void goToLocationPage() {
     	removeAll();
-    	add(new MainPanel(this));
+    	add(new LocationPanel(this));
+    	currentPage = 2;
+    }
+    
+    public int getCurrentPage() {
+    	return currentPage;
     }
     
     /**
