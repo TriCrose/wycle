@@ -53,7 +53,7 @@ public class DetailedRow {
         labelwind.setForeground(fontColor);
         labelicon.setForeground(fontColor);
 
-        // TODO figure out why the colour changes
+        /*/ TODO figure out why the colour changes
         // Mouse over event to reveal actual wind speed
         labelwind.addMouseListener(new MouseAdapter() {
             @Override
@@ -69,7 +69,7 @@ public class DetailedRow {
                 labelwind.setText(null);
                 labelwind.setIcon(MainWindow.getWindIcon(weatherHour.getWind(), 50, 50));
             }
-        });
+        });*/
 
 
         // Add the labels to the panel
