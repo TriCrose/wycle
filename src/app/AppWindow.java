@@ -49,6 +49,18 @@ public class AppWindow extends JFrame {
         return mWeatherForecast;
     }
     
+    public int getDayIndex() {
+    	return mDayIndex;
+    }
+    
+    public String getCurrentDay() {
+    	return mCurrentDay;
+    }
+    
+    public Color getFontColor() {
+    	return fontColor;
+    }
+    
     /**
      * Get the appropriate background image and then display it
      */

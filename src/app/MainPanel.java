@@ -59,6 +59,26 @@ public class MainPanel extends JPanel {
 	}
 	
 	/**
+     * @param panel  panel to be used to be added
+     * @param gridY  desired position of the panel
+     * @param weight weight of the panel
+     * @return The panel given, with added constraints and properties
+     */
+    private JPanel addPanel(JPanel panel, int gridY, double weight) {
+
+        panel.setOpaque(false);
+
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridx = 0;
+        constraints.gridy = gridY;
+        constraints.weightx = 1.0;
+        constraints.weighty = weight;
+
+        add(panel, constraints);
+        return panel;
+    }
+	
+	/**
      * Draw the day info, changes day automatically depending on the dayIndex (acts like offset)
      */
     private void drawDay() {
