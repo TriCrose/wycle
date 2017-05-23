@@ -185,14 +185,14 @@ public class MainPanel extends JPanel {
         } else {
             WeatherDay currentWeather = AppWindow.getmWeatherForecast().getDaySummary(parent.getDayIndex());
 
-            rain = currentWeather.getTotalRain()/24;
+            rain = currentWeather.getTotalRain();
             temp = currentWeather.getAvgTemp();
             wind = currentWeather.getMaxWind();
         }
 
         // Make the labels
         JLabel labelRain = new JLabel(rain + " mm");
-        JLabel labelTemp = new JLabel(temp + " °C");
+        JLabel labelTemp = new JLabel(temp + " Â°C");
         JLabel labelWind = new JLabel(getWindIcon(wind, 65, 25));
 
         // Mouse over event that displays actual wind speed
