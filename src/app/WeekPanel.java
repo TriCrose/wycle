@@ -117,9 +117,7 @@ public class WeekPanel extends JPanel {
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-
-                // TODO: change to new screen with this location
-                System.out.println("clicked recent " + this.toString());
+                parent.goToMainPage(dayIndex);
             }
         });
 
