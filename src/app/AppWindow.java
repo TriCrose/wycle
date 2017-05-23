@@ -57,7 +57,6 @@ public class AppWindow extends JFrame {
 
             @Override
             public boolean dispatchKeyEvent(KeyEvent e) {
-
                 if (ignorePress) {
                     ignorePress = false;
                     return false;
@@ -67,26 +66,20 @@ public class AppWindow extends JFrame {
                 System.out.println(key);
 
                 if (key == KeyEvent.VK_RIGHT) {
-                    removeAll();
                     if (mDayIndex < 5) {
                         mDayIndex += 1;
-                        add(new MainPanel(thisInstance));
                         System.out.println(mDayIndex);
                         goToMainPage(getDayIndex());
                     }
                     // new main window
                     // with next day
                 } else if (key == KeyEvent.VK_LEFT) {
-                    removeAll();
                     if (mDayIndex > 0) {
                         mDayIndex -= 1;
-                        add(new MainPanel(thisInstance));
                         System.out.println(mDayIndex);
                         goToMainPage(getDayIndex());
                     }
                 } else if (key == KeyEvent.VK_UP) {
-                    removeAll();
-                    add(new LocationPanel(thisInstance));
                     System.out.println("up");
                     goToWeekPage();
                 }
