@@ -441,23 +441,23 @@ public class MainWindow extends JFrame {
      */
     private ImageIcon getCyclingCoefficientIcon(double coeff) {
         //begin constructing filepath for icon
-        String filepath = "art/use_these/bike_coeffs/";
+        String filepath = "art/use_these/bike_coeffs_bg/";
         //access appropriate bike icon depending on given coefficient
         if (coeff < 0.2) {
-            filepath += "bike1x.png";
+            filepath += "bike1xx.png";
         } else if (coeff < 0.4) {
-            filepath += "bike2x.png";
+            filepath += "bike2xx.png";
         } else if (coeff < 0.6) {
-            filepath += "bike3x.png";
+            filepath += "bike3xx.png";
         } else if (coeff < 0.8) {
-            filepath += "bike4x.png";
+            filepath += "bike4xx.png";
         } else {
-            filepath += "bike5x.png";
+            filepath += "bike5xx.png";
         }
 
         ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
         Image image = icon.getImage(); // transform it
-        Image newimg = image.getScaledInstance(85, 50, Image.SCALE_SMOOTH); // scale it the smooth way
+        Image newimg = image.getScaledInstance(100, 75, Image.SCALE_SMOOTH); // scale it the smooth way
         icon = new ImageIcon(newimg);  // transform it back
         return icon;
     }
