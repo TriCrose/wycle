@@ -10,13 +10,10 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import apixu.WeatherDay;
-import apixu.WeatherForecast;
 import apixu.WeatherHour;
 import ui.DetailedRow;
 
@@ -84,25 +80,25 @@ public class MainPanel extends JPanel {
     private void drawDay() {
 
         // Set the text for the day to be the correct text
-        if (mDayIndex != 0) {
+        if (parent.getDayIndex() != 0) {
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DATE, mDayIndex);
-            mCurrentDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
+            calendar.add(Calendar.DATE, parent.getDayIndex());
+            parent.setCurrentDay(calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
         } else {
-            mCurrentDay = "Now";
+            parent.setCurrentDay("Now");
         }
 
         // Make a new label and style it
-        JLabel labelDay = new JLabel(mCurrentDay);
+        JLabel labelDay = new JLabel(parent.getCurrentDay());
         labelDay.setFont(new Font(labelDay.getFont().getName(), Font.PLAIN, 24));
         labelDay.setHorizontalAlignment(JLabel.CENTER);
-        labelDay.setForeground(fontColor);
+        labelDay.setForeground(parent.getFontColor());
         mDayPanel.add(labelDay, BorderLayout.LINE_START);
         // label for the current location
-        JLabel labelLocation = new JLabel(mWeatherForecast.getLocation());
+        JLabel labelLocation = new JLabel(AppWindow.getmWeatherForecast().getLocation());
         labelLocation.setHorizontalAlignment(JLabel.CENTER);
         labelLocation.setFont(new Font(labelLocation.getFont().getName(), Font.PLAIN, 24));
-        labelLocation.setForeground(fontColor);
+        labelLocation.setForeground(parent.getFontColor());
         mDayPanel.add(labelLocation, BorderLayout.CENTER);
         // Button for going to the location screen
         JButton buttonLocation = new JButton(getCompassIcon());
@@ -128,7 +124,7 @@ public class MainPanel extends JPanel {
      */
     private void drawIcons() {
 
-        WeatherHour weatherForecast = mWeatherForecast.getWeather();
+        WeatherHour weatherForecast = AppWindow.getmWeatherForecast().getWeather();
 
         // Get scaled icon to display
         ImageIcon icon = weatherForecast.getIcon(100, 100);
@@ -138,7 +134,7 @@ public class MainPanel extends JPanel {
         JLabel labelWeatherIcon = new JLabel(icon);
 
         // Set font parameters for BikeCoefficient message
-        labelBikeCoefficient.setForeground(fontColor);
+        labelBikeCoefficient.setForeground(parent.getFontColor());
         labelBikeCoefficient.setFont(new Font(labelBikeCoefficient.getFont().getName(), Font.BOLD, 16));
 
         // Mouse over event that displays a brief description of the cycling coefficient
@@ -178,15 +174,15 @@ public class MainPanel extends JPanel {
         double wind;
 
         // Get current weather for today or get average day weather for other days
-        if (mDayIndex == 0) {
+        if (parent.getDayIndex() == 0) {
 
-            WeatherHour currentWeather = mWeatherForecast.getWeather();
+            WeatherHour currentWeather = AppWindow.getmWeatherForecast().getWeather();
 
             rain = currentWeather.getRain();
             temp = currentWeather.getTemp();
             wind = currentWeather.getWind();
         } else {
-            WeatherDay currentWeather = mWeatherForecast.getDaySummary(mDayIndex);
+            WeatherDay currentWeather = AppWindow.getmWeatherForecast().getDaySummary(parent.getDayIndex());
 
             rain = currentWeather.getTotalRain()/24;
             temp = currentWeather.getAvgTemp();
@@ -218,13 +214,13 @@ public class MainPanel extends JPanel {
         // Style the labels
         labelRain.setHorizontalAlignment(JLabel.CENTER);
         labelRain.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
-        labelRain.setForeground(fontColor);
+        labelRain.setForeground(parent.getFontColor());
         labelTemp.setHorizontalAlignment(JLabel.CENTER);
         labelTemp.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
-        labelTemp.setForeground(fontColor);
+        labelTemp.setForeground(parent.getFontColor());
         labelWind.setHorizontalAlignment(JLabel.CENTER);
         labelWind.setFont(new Font(labelRain.getFont().getName(), Font.BOLD, 20));
-        labelWind.setForeground(fontColor);
+        labelWind.setForeground(parent.getFontColor());
         // Add the labels
         mRainWindPanel.add(labelRain);
         mRainWindPanel.add(labelTemp);
@@ -237,7 +233,7 @@ public class MainPanel extends JPanel {
      */
     private void drawDetailed() {
 
-        ArrayList<WeatherHour> weatherHour = mWeatherForecast.getWeather(mDayIndex);
+        ArrayList<WeatherHour> weatherHour = AppWindow.getmWeatherForecast().getWeather(parent.getDayIndex());
         // maybe needed so leave as null for now
         ArrayList<WeatherHour> tomorrowWeatherHour = null;
 
@@ -250,13 +246,13 @@ public class MainPanel extends JPanel {
 
             if (i + hour < weatherHour.size()) { // still today
                 DetailedRow dr = new DetailedRow();
-                JPanel panel = dr.getPanel(weatherHour.get(i + hour), fontColor);
+                JPanel panel = dr.getPanel(weatherHour.get(i + hour), parent.getFontColor());
                 alternateColourPanel(panel, i);
 
                 mDetailedPanel.add(panel);
             } else if (i + hour == weatherHour.size() && i != 9) { // enough room for tomorrow
 
-                tomorrowWeatherHour = mWeatherForecast.getWeather(1);
+                tomorrowWeatherHour = AppWindow.getmWeatherForecast().getWeather(1);
 
                 JPanel panel = new JPanel(new BorderLayout());
                 alternateColourPanel(panel, i);
@@ -264,13 +260,13 @@ public class MainPanel extends JPanel {
                 JLabel label = new JLabel("Tomorrow");
                 label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16));
                 label.setHorizontalAlignment(JLabel.CENTER);
-                label.setForeground(fontColor);
+                label.setForeground(parent.getFontColor());
                 panel.add(label);
                 mDetailedPanel.add(panel);
             } else if (i + hour > weatherHour.size()) { // tomorrow
                 DetailedRow dr = new DetailedRow();
                 assert tomorrowWeatherHour != null;
-                JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24), fontColor);
+                JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24), parent.getFontColor());
                 alternateColourPanel(panel, i);
                 mDetailedPanel.add(panel);
             }
@@ -294,36 +290,15 @@ public class MainPanel extends JPanel {
 
 
     /**
-     * Get the appropriate background image and then display it
-     */
-    private void setBackgroundImage() {
-
-        boolean isDay = mWeatherForecast.getWeather().getIsDay() == 1;
-
-        String path = "art/use_these/backgrounds/";
-        if (isDay) path += "background_day[bg].png";
-        else path += "background_night[bg].png";
-
-        try {
-            Image backgroundImage = ImageIO.read(new File(path));
-            JLabel background = new JLabel(new ImageIcon(backgroundImage));
-            this.setContentPane(background);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
      * Get the cycling coefficient for the current weather
      *
      * @return cycling coefficient as a double
      */
     private double getCyclingCoefficient() {
         //all weather data referenced in README
-        double wind = mWeatherForecast.getWeather().getWind();
-        double temp = mWeatherForecast.getWeather().getTemp();
-        double rain = mWeatherForecast.getWeather().getRain();
+        double wind = AppWindow.getmWeatherForecast().getWeather().getWind();
+        double temp = AppWindow.getmWeatherForecast().getWeather().getTemp();
+        double rain = AppWindow.getmWeatherForecast().getWeather().getRain();
         //standardized temperature, subtracting the mean of 12 and measuring increments per 2.5 degrees
         temp = (temp - 15) / 2.5;
         //standardized wind, subtracting the mean of 9 and measuring increments per 5mph
@@ -401,6 +376,36 @@ public class MainPanel extends JPanel {
         ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
         Image image = icon.getImage(); // transform it
         Image newimg = image.getScaledInstance(40, 40, Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+        return icon;
+    }
+    
+    /**
+     * Returns the wind icon scaled to the desired values and the icon depends on the wind value
+     *
+     * @param wind   current wind value
+     * @param width  desired width of the icon
+     * @param height desired height of the icon
+     * @return ImageIcon of wind of desired size and strength
+     */
+    public static ImageIcon getWindIcon(double wind, int width, int height) {
+
+        //begin constructing filepath for icon
+        String filepath = "art/use_these/wind_icons/";
+        //access appropriate wind icon depending on wind strength
+        if (wind < 6) {
+            filepath += "wind0.png";
+        } else if (wind < 8) {
+            filepath += "wind1.png";
+        } else if (wind < 10) {
+            filepath += "wind2.png";
+        } else {
+            filepath += "wind3.png";
+        }
+        // get, scale and return the icon
+        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH); // scale it the smooth way
         icon = new ImageIcon(newimg);  // transform it back
         return icon;
     }

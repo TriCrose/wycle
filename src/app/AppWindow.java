@@ -57,6 +57,10 @@ public class AppWindow extends JFrame {
     	return mCurrentDay;
     }
     
+    public void setCurrentDay(String day) {
+    	mCurrentDay = day;
+    }
+    
     public Color getFontColor() {
     	return fontColor;
     }
