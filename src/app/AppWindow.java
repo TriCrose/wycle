@@ -39,7 +39,7 @@ public class AppWindow extends JFrame {
         if (mWeatherForecast.getWeather().getIsDay() == 1) fontColor = Color.black;
         else fontColor = Color.white;
 
-        add(new LocationPanel(this));
+        add(new MainPanel(this));
         setVisible(true);
     }
 
@@ -49,34 +49,23 @@ public class AppWindow extends JFrame {
     public static WeatherForecast getmWeatherForecast() {
         return mWeatherForecast;
     }
-
-
-    public static void main(String args[]) {
-
-        new AppWindow();
-    }
     
-
     public int getDayIndex() {
     	return mDayIndex;
     }
-
-
+    
     public String getCurrentDay() {
     	return mCurrentDay;
     }
-
-
+    
     public void setCurrentDay(String day) {
     	mCurrentDay = day;
     }
-
-
+    
     public Color getFontColor() {
     	return fontColor;
     }
-
-
+    
     /**
      * Get the appropriate background image and then display it
      */
@@ -95,5 +84,9 @@ public class AppWindow extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static void main(String args[]) {
+        new AppWindow();
     }
 }

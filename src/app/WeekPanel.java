@@ -52,21 +52,10 @@ public class WeekPanel extends JPanel {
 
         mWeatherForecast = AppWindow.getmWeatherForecast();
 
-        // set the background image depending on isDay
-        //setBackgroundImage();
-
-        //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //setResizable(false);
         setSize(AppParams.WIDTH, AppParams.HEIGHT);
-        //setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
-
-        // Set font colour depending on day or night
-        if (mWeatherForecast.getWeather().getIsDay() == 1) {
-            fontColor = Color.black;
-        } else {
-            fontColor = Color.white;
-        }
+        setOpaque(false);
+        fontColor = parent.getFontColor();
 
         // make, add and style the panels
         mHeaderPanel = addPanel_Header(0, 0.04);
