@@ -22,6 +22,9 @@ public class AppWindow extends JFrame {
     // current day to display
     private String mCurrentDay;
     private Color fontColor;
+    
+    // 0 for main page, 1 for week window, 2 for location
+    private int currentPage = 0;
 
     public AppWindow() {
         super("Wycle");
@@ -39,7 +42,7 @@ public class AppWindow extends JFrame {
         if (mWeatherForecast.getWeather().getIsDay() == 1) fontColor = Color.black;
         else fontColor = Color.white;
 
-        add(new MainPanel(this));
+        goToMainPage();
         setVisible(true);
     }
 
@@ -64,6 +67,22 @@ public class AppWindow extends JFrame {
     
     public Color getFontColor() {
     	return fontColor;
+    }
+    
+    // Functions for navigation
+    public void goToLocationPage() {
+    	removeAll();
+    	add(new LocationPanel(this));
+    }
+    
+    public void goToWeekPage() {
+    	removeAll();
+    	add(new WeekPanel(this));
+    }
+    
+    public void goToMainPage() {
+    	removeAll();
+    	add(new MainPanel(this));
     }
     
     /**
