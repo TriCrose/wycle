@@ -114,7 +114,7 @@ public class MainPanel extends JPanel {
         // listener for when clicked
         buttonLocation.addActionListener(e -> {
             // Location button pressed
-            System.out.println("Location button clicked");
+            parent.goToLocationPage();
         });
 
     }
