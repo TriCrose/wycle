@@ -39,6 +39,7 @@ public class AppWindow extends JFrame {
         if (mWeatherForecast.getWeather().getIsDay() == 1) fontColor = Color.black;
         else fontColor = Color.white;
 
+        add(new MainPanel(this));
         setVisible(true);
     }
 

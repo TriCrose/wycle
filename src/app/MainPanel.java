@@ -39,6 +39,7 @@ public class MainPanel extends JPanel {
 	
 	public MainPanel(AppWindow parent) {
 		this.parent = parent;
+		setOpaque(false);
 		setLayout(new GridBagLayout());
 		// make, add and draw the panels
         mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
