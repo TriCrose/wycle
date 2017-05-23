@@ -25,6 +25,7 @@ public class AppWindow extends JFrame {
     
     // 0 for main page, 1 for week window, 2 for location
     private int currentPage = 0;
+    private JPanel panel;
 
     public AppWindow() {
         super("Wycle");
@@ -72,20 +73,20 @@ public class AppWindow extends JFrame {
     // Functions for navigation
     public void goToMainPage(int dayIndex) {
     	mDayIndex = dayIndex;
-    	removeAll();
-    	add(new MainPanel(this));
+    	if (panel != null) remove(panel);
+    	add(panel = new MainPanel(this));
     	currentPage = 0;
     }
     
     public void goToWeekPage() {
-    	removeAll();
-    	add(new WeekPanel(this));
+    	if (panel != null) remove(panel);
+    	add(panel = new WeekPanel(this));
     	currentPage = 1;
     }
     
     public void goToLocationPage() {
-    	removeAll();
-    	add(new LocationPanel(this));
+    	if (panel != null) remove(panel);
+    	add(panel = new LocationPanel(this));
     	currentPage = 2;
     }
     
@@ -97,7 +98,6 @@ public class AppWindow extends JFrame {
      * Get the appropriate background image and then display it
      */
     private void setBackgroundImage() {
-
         boolean isDay = mWeatherForecast.getWeather().getIsDay() == 1;
 
         String path = "art/use_these/backgrounds/";
