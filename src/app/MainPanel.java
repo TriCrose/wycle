@@ -1,12 +1,13 @@
-package ui;
+package app;
 
-import apixu.WeatherDay;
-import apixu.WeatherForecast;
-import apixu.WeatherHour;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -15,48 +16,35 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-/**
- * Main class which holds the home screen, this includes: day; icons; rain and wind; detailed view;
- */
-public class MainWindow extends JFrame {
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-    private static final long serialVersionUID = 1L;
-    private static GridBagConstraints constraints = new GridBagConstraints();
-    // store the weather forecast to reduce api calls
-    private static WeatherForecast mWeatherForecast = new WeatherForecast();
+import apixu.WeatherDay;
+import apixu.WeatherForecast;
+import apixu.WeatherHour;
+import ui.DetailedRow;
+
+public class MainPanel extends JPanel {
+	private static final long serialVersionUID = 1L;
+
+	private AppWindow parent; 
+	
+	private static GridBagConstraints constraints = new GridBagConstraints();
+	
     // store the panels in the frame
     private JPanel mDayPanel;
     private JPanel mIconsPanel;
     private JPanel mRainWindPanel;
     private JPanel mDetailedPanel;
-    // index to keep track of which day we are displaying
-    private int mDayIndex = 0; // change when switching days
-    // current day to display
-    private String mCurrentDay;
-    // font color which changes depending on isDay
-    private Color fontColor;
-
-    public MainWindow() {
-
-        super("Wycle");
-
-        // set the background image depending on the time of day
-        setBackgroundImage();
-
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        setSize(AppParams.WIDTH, AppParams.HEIGHT);
-        setLocationRelativeTo(null);
-        setLayout(new GridBagLayout());
-
-        // Set font colour depending on day or night
-        if (mWeatherForecast.getWeather().getIsDay() == 1) {
-            fontColor = Color.black;
-        } else {
-            fontColor = Color.white;
-        }
-
-        // make, add and draw the panels
+	
+	public MainPanel(AppWindow parent) {
+		this.parent = parent;
+		setLayout(new GridBagLayout());
+		// make, add and draw the panels
         mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
         mDayPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         drawDay();
@@ -68,89 +56,9 @@ public class MainWindow extends JFrame {
         mDetailedPanel = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
         mDetailedPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         drawDetailed();
-
-        setVisible(true);
-    }
-
-
-    public static void main(String args[]) {
-
-        new MainWindow();
-    }
-
-
-    /**
-     * @return WeatherForecast object containing the current weather and forecast
-     */
-    public static WeatherForecast getmWeatherForecast() {
-
-        return mWeatherForecast;
-    }
-
-
-    /**
-     * Returns the wind icon scaled to the desired values and the icon depends on the wind value
-     *
-     * @param wind   current wind value
-     * @param width  desired width of the icon
-     * @param height desired height of the icon
-     * @return ImageIcon of wind of desired size and strength
-     */
-    public static ImageIcon getWindIcon(double wind, int width, int height) {
-
-        //begin constructing filepath for icon
-        String filepath = "art/use_these/wind_icons/";
-        //access appropriate wind icon depending on wind strength
-        if (wind < 6) {
-            filepath += "wind0.png";
-        } else if (wind < 8) {
-            filepath += "wind1.png";
-        } else if (wind < 10) {
-            filepath += "wind2.png";
-        } else {
-            filepath += "wind3.png";
-        }
-        // get, scale and return the icon
-        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
-        Image image = icon.getImage(); // transform it
-        Image newimg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH); // scale it the smooth way
-        icon = new ImageIcon(newimg);  // transform it back
-        return icon;
-    }
-
-
-    /**
-     * Set the index for the new day, to be used for switching days
-     * @param mDayIndex new index for the day
-     */
-    public void setmDayIndex(int mDayIndex) {
-
-        this.mDayIndex = mDayIndex;
-    }
-
-
-    /**
-     * @param panel  panel to be used to be added
-     * @param gridY  desired position of the panel
-     * @param weight weight of the panel
-     * @return The panel given, with added constraints and properties
-     */
-    private JPanel addPanel(JPanel panel, int gridY, double weight) {
-
-        panel.setOpaque(false);
-
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridx = 0;
-        constraints.gridy = gridY;
-        constraints.weightx = 1.0;
-        constraints.weighty = weight;
-
-        add(panel, constraints);
-        return panel;
-    }
-
-
-    /**
+	}
+	
+	/**
      * Draw the day info, changes day automatically depending on the dayIndex (acts like offset)
      */
     private void drawDay() {
