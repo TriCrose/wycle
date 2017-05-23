@@ -41,7 +41,6 @@ public class LocationPanel extends JPanel {
     // color for the font, changes depending isDay
     private Color fontColor;
 
-
     /**
      * Create a new LocationWindow.
      * <p>
@@ -209,9 +208,11 @@ public class LocationPanel extends JPanel {
             if (!e.getValueIsAdjusting()) {
                 if (list.getSelectedIndex() > -1) {
                     // List item selected
-                    System.out.println("clicked " + list.getSelectedValue());
+                    System.out.println("clicked " + list.getSelectedValue().getCountry());
 
                     incrementFrequency(list.getSelectedValue());
+                    parent.goToMainPage(0, list.getSelectedValue());
+
                 }
             }
         });
