@@ -4,6 +4,9 @@ import apixu.WeatherHour;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Store method for creating panels for the detailed view on the MainWindow
@@ -51,6 +54,24 @@ public class DetailedRow {
         labelwind.setForeground(fontColor);
         labelicon.setForeground(fontColor);
 
+        // TODO figure out why the colour changes
+        // Mouse over event to reveal actual wind speed
+        labelwind.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                labelwind.setIcon(null);
+                labelwind.setText(Double.toString((weatherHour.getWind())) + "mph");
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                labelwind.setText(null);
+                labelwind.setIcon(MainWindow.getWindIcon(weatherHour.getWind(), 50, 50));
+            }
+        });
+
 
         // Add the labels to the panel
         mRowPanel.add(labelTime);
@@ -61,4 +82,5 @@ public class DetailedRow {
 
         return mRowPanel;
     }
+
 }

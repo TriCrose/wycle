@@ -269,7 +269,24 @@ public class MainWindow extends JFrame {
         // Make the labels
         JLabel labelRain = new JLabel(rain + " mm");
         JLabel labelTemp = new JLabel(temp + " °C");
-        JLabel labelWind = new JLabel(getWindIcon(wind, 85, 50));
+        JLabel labelWind = new JLabel(getWindIcon(wind, 65, 25));
+
+        // Mouse over event that displays actual wind speed
+        labelWind.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                labelWind.setIcon(null);
+                labelWind.setText(Double.toString(wind) + "mph");
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                labelWind.setText(null);
+                labelWind.setIcon(getWindIcon(wind, 65, 25));
+            }
+        });
 
         // Style the labels
         labelRain.setHorizontalAlignment(JLabel.CENTER);
