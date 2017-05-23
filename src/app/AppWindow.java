@@ -134,6 +134,9 @@ public class AppWindow extends JFrame {
     	add(panel = new MainPanel(this));
     	currentPage = 0;
     	panel.repaint();
+    	panel.revalidate();
+    	repaint();
+    	revalidate();
     }
 
 
@@ -142,6 +145,9 @@ public class AppWindow extends JFrame {
     	add(panel = new WeekPanel(this));
     	currentPage = 1;
     	panel.repaint();
+    	panel.revalidate();
+    	repaint();
+    	revalidate();
     }
 
 
@@ -150,6 +156,9 @@ public class AppWindow extends JFrame {
     	add(panel = new LocationPanel(this));
     	currentPage = 2;
     	panel.repaint();
+    	panel.revalidate();
+    	repaint();
+    	revalidate();
     }
 
 
