@@ -4,11 +4,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
+import java.util.List;
+import java.util.ArrayList;
 
 import nolib.pages.*;
 
 public class AppWindow extends JFrame implements MouseListener {
     private static final long serialVersionUID = 1L;
+    
+    // Track mouse position
+    private Point lastMousePosition;
+    private boolean mouseDown = false;
+    private int swipe;
     
     // Singleton
     private static AppWindow instance;
@@ -34,19 +42,15 @@ public class AppWindow extends JFrame implements MouseListener {
     // Panel where drawing happens
     private JPanel drawingPanel;
     
-    // Current page to display
-    private AppPage currentPage;
+    // List of pages (one for each day)
+    private List<AppPage> days;
     
-    // Next page (used when transitioning)
-    private AppPage nextPage;
-    
-    // Pending page change
-    public void setPage(AppPage nextPage) {
-    	this.nextPage = nextPage;
-    }
+    // Current day
+    private int currentPage = 0;
     
     private AppWindow() {
         super("Wycle");
+        days = new ArrayList<>();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         setSize(WIDTH, HEIGHT);
@@ -66,8 +70,12 @@ public class AppWindow extends JFrame implements MouseListener {
         		// Turn on antialiasing
         		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         		
-        		// Draw the current page
-        		if (currentPage != null) currentPage.render(g2);
+        		for (int i = 0; i < days.size(); i++) {
+        			AffineTransform translate = new AffineTransform();
+        			translate.translate((i - currentPage) * width() + swipe, 0);
+        			g2.setTransform(translate);
+        			days.get(i).render(g2);
+        		}
         	}
         };
         add(drawingPanel);
@@ -77,6 +85,7 @@ public class AppWindow extends JFrame implements MouseListener {
 
     // Begin the update-render loop
     public void startLoop() {
+    	for (int i = 0; i < 6; i++) days.add(new MainPage(i));
     	long t = System.currentTimeMillis();
     	
     	while (isShowing()) {
@@ -84,21 +93,13 @@ public class AppWindow extends JFrame implements MouseListener {
     		long dt = System.currentTimeMillis() - t;
     		t = System.currentTimeMillis();
     		
-    		// If a page change is pending then do it now
-    		if (nextPage != null) {
-    			if (currentPage != null) currentPage.destroy();		// First, destroy the old one
-    			currentPage = nextPage;								// Now select the new one
-    			nextPage = null;									// Set the next one to null
-    		}
+    		if (mouseDown) swipe = lastMousePosition.x - MouseInfo.getPointerInfo().getLocation().x;
     		
-    		// Now update and render providing we have a valid page
-    		if (currentPage != null) {
-    			currentPage.update(dt);
-    			drawingPanel.repaint();
-    		}
+    		// Draw page
+    		drawingPanel.repaint();
     		
     		// Cap the framerate at 60
-    		if (dt < 17) try { Thread.sleep(17 - dt); } catch (InterruptedException e) { e.printStackTrace(); }
+    		if (dt < 50) try { Thread.sleep(50 - dt); } catch (InterruptedException e) { e.printStackTrace(); }
     	}
     }
 
@@ -113,18 +114,22 @@ public class AppWindow extends JFrame implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		currentPage.mouseDown(e.getX(), e.getY());
+		lastMousePosition = MouseInfo.getPointerInfo().getLocation();
+		mouseDown = true;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		currentPage.mouseUp(e.getX(), e.getY());
+		mouseDown = false;
+		if (lastMousePosition.equals(MouseInfo.getPointerInfo().getLocation())) {
+			JOptionPane.showMessageDialog(null, "");
+			days.get(currentPage).mouseClick(e.getX(), e.getY());
+		}
 	}
 	
 	// Start the app
     public static void main(String[] args) {
         AppWindow window = AppWindow.get();
-        window.setPage(new MainPage());
         window.startLoop();
     }
 }
