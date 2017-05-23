@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import location.LocationObject;
 
 /**
  * Main class which holds the home screen, this includes: day; icons; rain and wind; detailed view;
@@ -136,6 +137,18 @@ public class AppWindow extends JFrame {
     // Functions for navigation
     public void goToMainPage(int dayIndex) {
     	mDayIndex = dayIndex;
+    	if (panel != null) remove(panel);
+    	add(panel = new MainPanel(this));
+    	currentPage = 0;
+    	panel.repaint();
+    	panel.revalidate();
+    	repaint();
+    	revalidate();
+    }
+    
+    public void goToMainPage(int dayIndex, LocationObject location) {
+    	mDayIndex = dayIndex;
+    	AppWindow.mWeatherForecast = new  WeatherForecast(location);
     	if (panel != null) remove(panel);
     	add(panel = new MainPanel(this));
     	currentPage = 0;
