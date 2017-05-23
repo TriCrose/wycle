@@ -128,11 +128,12 @@ public class WeekWindow extends JFrame {
         // get the min / max temp or average temp
         if (dayIndex != 0) {
             WeatherDay day = mWeatherForecast.getDaySummary(dayIndex);
-            temp = Integer.toString((int)day.getMaxTemp()) + "°C     " + Integer.toString((int)day.getMinTemp()) + "°C";
+            temp = Integer.toString((int) day.getMaxTemp()) + " °C     " + Integer
+                    .toString((int) day.getMinTemp()) + " °C";
             icon = day.getIcon(100, 100);
         } else {
             WeatherHour hour = mWeatherForecast.getWeather();
-            temp = Double.toString(hour.getTemp()) + "°C";
+            temp = Double.toString(hour.getTemp()) + " °C";
             icon = hour.getIcon(100, 100);
         }
 
