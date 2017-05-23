@@ -56,7 +56,6 @@ public class AppWindow extends JFrame {
 
             @Override
             public boolean dispatchKeyEvent(KeyEvent e) {
-
                 if (ignorePress) {
                     ignorePress = false;
                     return false;
