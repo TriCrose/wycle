@@ -1,6 +1,7 @@
 package app;
 
 import apixu.WeatherForecast;
+import location.LocationObject;
 import ui.AppParams;
 
 import javax.imageio.ImageIO;
@@ -9,7 +10,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import location.LocationObject;
 
 /**
  * Main class which holds the home screen, this includes: day; icons; rain and wind; detailed view;
@@ -64,6 +64,7 @@ public class AppWindow extends JFrame {
 
                 int key = e.getKeyCode();
                 System.out.println(key);
+                System.out.println(getDayIndex());
 
                 if (key == KeyEvent.VK_RIGHT) {
                     if (mDayIndex < 5) {
@@ -133,9 +134,8 @@ public class AppWindow extends JFrame {
     	if (panel != null) remove(panel);
     	add(panel = new MainPanel(this));
     	currentPage = 0;
-    	panel.repaint();
-    	panel.revalidate();
-    	repaint();
+
+        repaint();
     	revalidate();
     }
     
@@ -145,9 +145,8 @@ public class AppWindow extends JFrame {
     	if (panel != null) remove(panel);
     	add(panel = new MainPanel(this));
     	currentPage = 0;
-    	panel.repaint();
-    	panel.revalidate();
-    	repaint();
+
+        repaint();
     	revalidate();
     }
 
@@ -156,9 +155,8 @@ public class AppWindow extends JFrame {
     	if (panel != null) remove(panel);
     	add(panel = new WeekPanel(this));
     	currentPage = 1;
-    	panel.repaint();
-    	panel.revalidate();
-    	repaint();
+
+        repaint();
     	revalidate();
     }
 
@@ -167,9 +165,8 @@ public class AppWindow extends JFrame {
     	if (panel != null) remove(panel);
     	add(panel = new LocationPanel(this));
     	currentPage = 2;
-    	panel.repaint();
-    	panel.revalidate();
-    	repaint();
+
+        repaint();
     	revalidate();
     }
 

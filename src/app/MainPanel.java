@@ -1,47 +1,35 @@
 package app;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
+import apixu.WeatherDay;
+import apixu.WeatherHour;
+import ui.DetailedRow;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import apixu.WeatherDay;
-import apixu.WeatherHour;
-import ui.DetailedRow;
-
 public class MainPanel extends JPanel {
-	private static final long serialVersionUID = 1L;
 
-	private AppWindow parent; 
-	
-	private static GridBagConstraints constraints = new GridBagConstraints();
-	
+    private static final long serialVersionUID = 1L;
+    private static GridBagConstraints constraints = new GridBagConstraints();
+    private AppWindow parent;
     // store the panels in the frame
     private JPanel mDayPanel;
     private JPanel mIconsPanel;
     private JPanel mRainWindPanel;
     private JPanel mDetailedPanel;
-	
-	public MainPanel(AppWindow parent) {
-		this.parent = parent;
-		setOpaque(false);
-		setLayout(new GridBagLayout());
-		// make, add and draw the panels
+
+
+    public MainPanel(AppWindow parent) {
+
+        this.parent = parent;
+        setOpaque(false);
+        setLayout(new GridBagLayout());
+        // make, add and draw the panels
         mDayPanel = addPanel(new JPanel(new BorderLayout()), 0, 0.04);
         mDayPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         drawDay();
@@ -53,9 +41,41 @@ public class MainPanel extends JPanel {
         mDetailedPanel = addPanel(new JPanel(new GridLayout(0, 1)), 3, 0.5);
         mDetailedPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         drawDetailed();
-	}
-	
-	/**
+    }
+
+
+    /**
+     * Returns the wind icon scaled to the desired values and the icon depends on the wind value
+     *
+     * @param wind   current wind value
+     * @param width  desired width of the icon
+     * @param height desired height of the icon
+     * @return ImageIcon of wind of desired size and strength
+     */
+    public static ImageIcon getWindIcon(double wind, int width, int height) {
+
+        //begin constructing filepath for icon
+        String filepath = "art/use_these/wind_icons/";
+        //access appropriate wind icon depending on wind strength
+        if (wind < 6) {
+            filepath += "wind0.png";
+        } else if (wind < 8) {
+            filepath += "wind1.png";
+        } else if (wind < 10) {
+            filepath += "wind2.png";
+        } else {
+            filepath += "wind3.png";
+        }
+        // get, scale and return the icon
+        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
+        Image image = icon.getImage(); // transform it
+        Image newimg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = new ImageIcon(newimg);  // transform it back
+        return icon;
+    }
+
+
+    /**
      * @param panel  panel to be used to be added
      * @param gridY  desired position of the panel
      * @param weight weight of the panel
@@ -74,8 +94,9 @@ public class MainPanel extends JPanel {
         add(panel, constraints);
         return panel;
     }
-	
-	/**
+
+
+    /**
      * Draw the day info, changes day automatically depending on the dayIndex (acts like offset)
      */
     private void drawDay() {
@@ -116,7 +137,6 @@ public class MainPanel extends JPanel {
             // Location button pressed
             parent.goToLocationPage();
         });
-
     }
 
 
@@ -142,13 +162,16 @@ public class MainPanel extends JPanel {
         labelBikeCoefficient.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
+
                 super.mouseEntered(e);
                 labelBikeCoefficient.setIcon(null);
                 labelBikeCoefficient.setText(getCyclingCoefficientMessage(getCyclingCoefficient()));
             }
 
+
             @Override
             public void mouseExited(MouseEvent e) {
+
                 super.mouseExited(e);
                 labelBikeCoefficient.setIcon(getCyclingCoefficientIcon(getCyclingCoefficient()));
                 labelBikeCoefficient.setText(null);
@@ -199,13 +222,16 @@ public class MainPanel extends JPanel {
         labelWind.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
+
                 super.mouseEntered(e);
                 labelWind.setIcon(null);
                 labelWind.setText(Double.toString(wind) + "mph");
             }
 
+
             @Override
             public void mouseExited(MouseEvent e) {
+
                 super.mouseExited(e);
                 labelWind.setText(null);
                 labelWind.setIcon(getWindIcon(wind, 65, 25));
@@ -238,36 +264,46 @@ public class MainPanel extends JPanel {
         // maybe needed so leave as null for now
         ArrayList<WeatherHour> tomorrowWeatherHour = null;
 
-        // current hour of the day
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int hour = 0;
+        if (parent.getDayIndex() == 0) {
+            // current hour of the day
+            hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        }
 
         // draw the panels, conditional for whether we can fill the space with just today's weather or need to add
         // tomorrows
         for (int i = 0; i < 10; i++) {
+            if (parent.getDayIndex() == 0) {
+                if (i + hour < weatherHour.size()) { // still today
+                    DetailedRow dr = new DetailedRow();
+                    JPanel panel = dr.getPanel(weatherHour.get(i + hour), parent.getFontColor());
+                    alternateColourPanel(panel, i);
 
-            if (i + hour < weatherHour.size()) { // still today
+                    mDetailedPanel.add(panel);
+                } else if (i + hour == weatherHour.size() && i != 9) { // enough room for tomorrow
+
+                    tomorrowWeatherHour = AppWindow.getmWeatherForecast().getWeather(parent.getDayIndex());
+
+                    JPanel panel = new JPanel(new BorderLayout());
+                    alternateColourPanel(panel, i);
+
+                    JLabel label = new JLabel("Tomorrow");
+                    label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16));
+                    label.setHorizontalAlignment(JLabel.CENTER);
+                    label.setForeground(parent.getFontColor());
+                    panel.add(label);
+                    mDetailedPanel.add(panel);
+                } else if (i + hour > weatherHour.size()) { // tomorrow
+                    DetailedRow dr = new DetailedRow();
+                    assert tomorrowWeatherHour != null;
+                    JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24), parent.getFontColor());
+                    alternateColourPanel(panel, i);
+                    mDetailedPanel.add(panel);
+                }
+            } else {
                 DetailedRow dr = new DetailedRow();
-                JPanel panel = dr.getPanel(weatherHour.get(i + hour), parent.getFontColor());
-                alternateColourPanel(panel, i);
-
-                mDetailedPanel.add(panel);
-            } else if (i + hour == weatherHour.size() && i != 9) { // enough room for tomorrow
-
-                tomorrowWeatherHour = AppWindow.getmWeatherForecast().getWeather(1);
-
-                JPanel panel = new JPanel(new BorderLayout());
-                alternateColourPanel(panel, i);
-
-                JLabel label = new JLabel("Tomorrow");
-                label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16));
-                label.setHorizontalAlignment(JLabel.CENTER);
-                label.setForeground(parent.getFontColor());
-                panel.add(label);
-                mDetailedPanel.add(panel);
-            } else if (i + hour > weatherHour.size()) { // tomorrow
-                DetailedRow dr = new DetailedRow();
-                assert tomorrowWeatherHour != null;
-                JPanel panel = dr.getPanel(tomorrowWeatherHour.get((i - 1 + hour) % 24), parent.getFontColor());
+                JPanel panel = dr.getPanel(AppWindow.getmWeatherForecast().getWeather(parent.getDayIndex())
+                                                    .get(2 * i + 4), parent.getFontColor());
                 alternateColourPanel(panel, i);
                 mDetailedPanel.add(panel);
             }
@@ -277,8 +313,9 @@ public class MainPanel extends JPanel {
 
     /**
      * Alternately colour panels depending on the given index
+     *
      * @param panel panel to be coloured
-     * @param i index for the alternation
+     * @param i     index for the alternation
      */
     private void alternateColourPanel(JPanel panel, int i) {
 
@@ -316,11 +353,13 @@ public class MainPanel extends JPanel {
         return coeff;
     }
 
+
     /**
      * @param coeff the cycling coefficient value
      * @return the relevant description for that value
      */
     private String getCyclingCoefficientMessage(double coeff) {
+
         String message;
         if (coeff < 0.2) {
             message = "<html><div style='text-align: center;'>Terrible conditions for cycling, be careful!</html>";
@@ -339,6 +378,7 @@ public class MainPanel extends JPanel {
 
     /**
      * Get the corresponding image for the coefficient value given and scale it
+     *
      * @param coeff value to use to select image
      * @return icon of cycling coefficient
      */
@@ -368,6 +408,7 @@ public class MainPanel extends JPanel {
 
     /**
      * Get the image for the compass and scale it to fit
+     *
      * @return image icon for the compass
      */
     private ImageIcon getCompassIcon() {
@@ -377,36 +418,6 @@ public class MainPanel extends JPanel {
         ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
         Image image = icon.getImage(); // transform it
         Image newimg = image.getScaledInstance(40, 40, Image.SCALE_SMOOTH); // scale it the smooth way
-        icon = new ImageIcon(newimg);  // transform it back
-        return icon;
-    }
-    
-    /**
-     * Returns the wind icon scaled to the desired values and the icon depends on the wind value
-     *
-     * @param wind   current wind value
-     * @param width  desired width of the icon
-     * @param height desired height of the icon
-     * @return ImageIcon of wind of desired size and strength
-     */
-    public static ImageIcon getWindIcon(double wind, int width, int height) {
-
-        //begin constructing filepath for icon
-        String filepath = "art/use_these/wind_icons/";
-        //access appropriate wind icon depending on wind strength
-        if (wind < 6) {
-            filepath += "wind0.png";
-        } else if (wind < 8) {
-            filepath += "wind1.png";
-        } else if (wind < 10) {
-            filepath += "wind2.png";
-        } else {
-            filepath += "wind3.png";
-        }
-        // get, scale and return the icon
-        ImageIcon icon = new ImageIcon(filepath); //convert png to ImageIcon
-        Image image = icon.getImage(); // transform it
-        Image newimg = image.getScaledInstance(width, height, Image.SCALE_SMOOTH); // scale it the smooth way
         icon = new ImageIcon(newimg);  // transform it back
         return icon;
     }
