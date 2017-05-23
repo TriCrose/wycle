@@ -1,6 +1,7 @@
 package ui;
 
 import apixu.WeatherForecast;
+import app.AppWindow;
 import location.LocationObject;
 
 import javax.swing.*;
@@ -24,17 +25,20 @@ public class RecentsRow implements Serializable {
 
     private LocationObject mLocationObject;
 
+    private AppWindow parent;
+
 
     /**
      * Set the fields and get the weather data for the given location
      *
      * @param lo the location object for this recent location
      */
-    public RecentsRow(LocationObject lo) {
+    public RecentsRow(LocationObject lo, AppWindow parent) {
 
         mLocationObject = lo;
         mPlaceName = lo.getCity();
         mFrequency = 1;
+        this.parent = parent;
     }
 
 
@@ -123,7 +127,7 @@ public class RecentsRow implements Serializable {
             @Override
             public void mouseReleased(MouseEvent e) {
 
-                // TODO: change to new screen with this location
+                parent.goToMainPage(0, mLocationObject);
                 System.out.println("clicked recent " + this.toString());
             }
         });

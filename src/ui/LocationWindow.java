@@ -277,7 +277,7 @@ public class LocationWindow extends JFrame {
             ArrayList<LocationObject> cities = LocationStore.getCities();
             mRecentsList = new ArrayList<>();
             for (int i = 0; i < 6; i++) {
-                RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())));
+                RecentsRow rr = new RecentsRow(cities.get((new Random()).nextInt(cities.size())), null);
                 mRecentsList.add(rr);
 
                 rr.updateWeather();
@@ -318,7 +318,7 @@ public class LocationWindow extends JFrame {
         }
         // didn't find one so make a new one
         if (!updated) {
-            RecentsRow rr = new RecentsRow(lo);
+            RecentsRow rr = new RecentsRow(lo, null);
             mRecentsList.add(rr);
         }
     }
