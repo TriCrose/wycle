@@ -76,18 +76,21 @@ public class AppWindow extends JFrame {
     	if (panel != null) remove(panel);
     	add(panel = new MainPanel(this));
     	currentPage = 0;
+    	panel.repaint();
     }
     
     public void goToWeekPage() {
     	if (panel != null) remove(panel);
     	add(panel = new WeekPanel(this));
     	currentPage = 1;
+    	panel.repaint();
     }
     
     public void goToLocationPage() {
     	if (panel != null) remove(panel);
     	add(panel = new LocationPanel(this));
     	currentPage = 2;
+    	panel.repaint();
     }
     
     public int getCurrentPage() {
